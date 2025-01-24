@@ -272,19 +272,19 @@ select {
   
   /* Estilos para las opciones <option> dentro del <select> */
   select option {
-    background-color: #000000; /* Fondo blanco */
-    color: #ffffff; /* Color del texto */
+    background-color: #fff; /* Fondo blanco */
+    color: #1b1b1b; /* Color del texto */
     padding: 8px; /* Relleno de las opciones */
     font-size: 16px;
-    transition: background-color 0.3s;
+    transition: background-color 0.1s;
   }
   
   select option:hover {
-    background-color: #f0f0f0; /* Fondo al pasar el mouse sobre las opciones */
+    background-color: #020202; /* Fondo al pasar el mouse sobre las opciones */
   }
   
   select option:checked {
     background-color: #3C50E0; /* Fondo azul cuando está seleccionado */
-    color: white; /* Color blanco para el texto seleccionado */
+    color: #fff; /* Color blanco para el texto seleccionado */
   }
   
