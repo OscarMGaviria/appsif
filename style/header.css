@@ -1,0 +1,170 @@
+@import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@300..700&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+
+:root {
+    --fondo: #F7FBFE;
+    --header: #ffffff;
+    --azul: #1479FF;
+    --hover-azul:#4F61E3;
+    --bordes: #E2E8F0;
+    --fondo-blanco: #fff;
+    --texto-azul: #1C2434;
+    --texto-gris: #F7FBFE;
+    --card:#fff;
+    --gris:#858585;
+    --azul-boton:#3C50E0;
+    /*Colores adicionales*/
+    --Color-parrafo:#8e99aa;
+    --color-fondoApp: #eef2f6;
+    --Color-cards:#fff;
+    --Color-boton:#3c50e0;
+    --Color-textoNegro:#000;
+    --Color-borde:#8e99aa;
+    --Color-texto-2:#1e1e1e;
+    --Color-hover-input: #374ce6;
+    --Color-placeholder:#9da1ad;
+    --Color-BorderInput:#e4e8f3;
+}
+
+
+
+body {
+    
+    font-family: 'Satoshi', sans-serif;
+    padding: 0px;
+    margin: 0px;
+    background-color: var(--color-fondoApp);
+}
+
+
+
+
+.header-contenedor {
+    user-select: none;
+    display: flex;
+    height: 8vh;
+    width: 100%;
+    background-color: var(--header);
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.05);
+}
+
+.nombre h3 {
+    margin-left: 20px;
+    color: var(--azul);
+}
+
+.usuarios{
+    display: flex;
+    align-items: center;
+    margin-right: 30px;
+    gap: 5px;
+    text-align: end;
+}
+
+.usuarios i {
+    color: var(--azul);
+}
+
+.nombre_usuarios {
+    margin: 0; /* Elimina márgenes innecesarios del contenedor */
+    line-height: 0.6;
+}
+
+.nombre_usuarios h5 {
+    color: var(--texto-azul);
+    font-size: 14px;
+    margin: 0; /* Opcional: elimina márgenes por defecto */
+    margin-bottom: 0.5rem; /* Espaciado entre el h4 y el p */
+    line-height: 0.6;
+}
+
+.nombre_usuarios p {
+    color: var(--texto-azul);
+    font-size: 10px;
+    margin: 0; /* Opcional: elimina márgenes por defecto */
+    line-height: 0.6;
+}
+
+.cerrar-sesion {
+    display: none; /* Inicialmente está oculto */
+    flex-direction: column;
+    position: absolute;
+    right: 25px;
+    top: 8.5vh;
+    width: 200px;
+    height: 180px;
+    z-index: 1;
+    background-color: var(--card);
+    box-shadow: 0px 8px 8px rgba(0, 0, 0, 0.05);
+    transition: max-height 0.5s ease-out; /* Animación suave para la visibilidad */
+}
+
+.contenedor-opciones {
+    height: 100%;
+    display: flex;
+    justify-content: flex-start;
+    flex-direction: column;
+    padding: 10px 0;
+}
+
+.icono-ampliar {
+    cursor: pointer;    
+    margin-left: 5px;
+    transition: transform 0.5s ease;
+}
+
+.icono-ampliar:hover {
+    transform: rotate(180deg); /* Flecha gira al pasar el cursor */
+}
+
+.iconos-sesion {
+    bottom: 1px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
+}
+
+
+
+.close-contenedor {
+    border-top: 0.5px solid var(--Color-borde);
+    padding: 10px 0;
+
+}
+
+.close-contenedor:hover {
+
+    background-color: #eff4fb;
+}
+
+
+.iconos-sesion i {
+    width: 20px; /* Ancho fijo para el ícono */
+    text-align: center; /* Centra el ícono dentro de su contenedor */
+    font-size: 14px; /* Tamaño del ícono */
+    color: var(--Color-parrafo);
+    margin: 10px 0;
+    
+}
+
+.iconos-sesion label {
+    width: 70%; /* Ancho fijo para el label */
+    margin-left: 10px; /* Espacio entre el ícono y el texto */
+    font-size: 13px; /* Tamaño de fuente del label */
+    cursor: pointer;
+    color: var(--Color-parrafo);
+    font-weight: 500;
+}
+
+.iconos-sesion label:hover {
+    color: var(--hover-azul);
+    font-size: 15px; 
+
+}
+.iconos-sesion i:hover {
+    color: var(--hover-azul);
+}

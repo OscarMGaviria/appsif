@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Subir Excel a Firebase Firestore</title>
+
+    <!-- Cargar los SDK de Firebase sin módulos -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+
+    <!-- Cargar la biblioteca SheetJS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.1/xlsx.full.min.js"></script>
+</head>
+<body>
+    <h1>Subir Excel a Firestore</h1>
+
+    <!-- Input para cargar el archivo Excel -->
+    <input type="file" id="excelFileInput" accept=".xlsx, .xls" />
+    <button onclick="handleFileUpload()">Subir Excel</button>
+
+    <script>
+        // Configuración de Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyCu-xGv-XYPRURgr663shm-0wVzym0_VXc",
+            authDomain: "appsif-78ded.firebaseapp.com",
+            projectId: "appsif-78ded",
+            storageBucket: "appsif-78ded.firebasestorage.app",
+            messagingSenderId: "946349392819",
+            appId: "1:946349392819:web:09a04880e9aed24e40c1c6"
+        };
+
+        // Inicializar Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        // Función para manejar la carga del archivo
+        function handleFileUpload() {
+            const fileInput = document.getElementById('excelFileInput');
+            const file = fileInput.files[0];
+
+            if (file) {
+                const reader = new FileReader();
+
+                // Lee el archivo Excel
+                reader.onload = function(event) {
+                    try {
+                        // Convierte el contenido del archivo Excel a JSON
+                        const data = event.target.result;
+                        const workbook = XLSX.read(data, { type: 'binary' });
+                        const sheet = workbook.Sheets[workbook.SheetNames[0]]; // Seleccionamos la primera hoja
+                        const jsonData = XLSX.utils.sheet_to_json(sheet);
+
+                        // Llama a la función para subir los datos a Firestore
+                        uploadExcelToFirestore(jsonData);
+                    } catch (error) {
+                        console.error("Error al procesar el archivo Excel:", error);
+                    }
+                };
+
+                reader.readAsBinaryString(file); // Lee el archivo como binario
+            } else {
+                console.log("No se seleccionó un archivo");
+            }
+        }
+
+        // Función para subir los datos del archivo Excel a Firestore
+        function uploadExcelToFirestore(excelData) {
+            if (Array.isArray(excelData)) {
+                let count = 0;  // Contador para los registros que se suben
+                let total = excelData.length;  // Total de registros en el archivo Excel
+
+                excelData.forEach((item) => {
+                    // Asegurarse de que todos los campos estén presentes, incluso si están vacíos
+                    const campos = [
+                        "contrato", "estado_cto", "objeto", "municipio", "subregion", "contratista", "interventoria", "unidad", 
+                        "fecha_inicio", "fecha_actualizacion", "fecha_termina", "indicadores", "tipo_proyecto", 
+                        "financiacion", "aporte_dto", "aporte_mpio", "aporte_total", "percen_dtop", "percen_mpio", 
+                        "meta", "avance_meta", "desembolso", "avance_fisico", "avance_financiero", "dependencia", 
+                        "supervisor", "observacion", "impacto", "imp_amb", "imp_social", "imp_predial","vigencia"
+                    ];
+
+                    // Asegurarse de que cada campo esté presente y no sea null/undefined
+                    campos.forEach((campo) => {
+                        if (item[campo] === null || item[campo] === undefined) {
+                            item[campo] = "";  // Asignamos "" si está vacío
+                        }
+                    });
+
+                    // Validar y formatear las fechas
+                    if (item.fecha_inicio) {
+                        item.fecha_inicio = formatDate(item.fecha_inicio);
+                    }
+                    if (item.fecha_actualizacion) {
+                        item.fecha_actualizacion = formatDate(item.fecha_actualizacion);
+                    }
+                    if (item.fecha_termina) {
+                        item.fecha_termina = formatDate(item.fecha_termina);
+                    }
+
+                    const contratoId = item.contrato; // Suponiendo que 'contrato' es el campo único
+
+                    // Verificar si el contrato ya existe en Firestore
+                    db.collection("contratos").where("contrato", "==", contratoId).get()
+                        .then((querySnapshot) => {
+                            if (querySnapshot.empty) {
+                                // Si no existe el contrato, lo agregamos
+                                db.collection("contratos").add(item)
+                                    .then((docRef) => {
+                                        console.log("Documento agregado con ID: ", docRef.id);
+                                        count++;  // Incrementar el contador por cada registro agregado
+                                        // Mostrar el número de contratos agregados
+                                        console.log(`Se han subido ${count} de ${total} contratos.`);
+                                    })
+                                    .catch((error) => {
+                                        console.error("Error al agregar el documento: ", error);
+                                    });
+                            } else {
+                                // Si el contrato ya existe, lo ignoramos
+                                console.log(`El contrato con ID ${contratoId} ya existe. No se agregará.`);
+                            }
+                        })
+                        .catch((error) => {
+                            console.error("Error al verificar el contrato en Firestore: ", error);
+                        });
+                });
+
+                // Mostrar el número total de registros agregados después de procesar todos los contratos
+                setTimeout(() => {
+                    console.log(`Proceso completado. Se han subido ${count} de ${total} contratos.`);
+                }, 1000);  // Esperar un poco para asegurarse de que se completen las promesas
+            } else {
+                console.error("El archivo Excel no tiene la estructura correcta.");
+            }
+        }
+
+        // Función para formatear fechas en el formato 'yyyy-MM-dd'
+        function formatDate(date) {
+            const d = new Date(date);
+            const year = d.getFullYear();
+            const month = (d.getMonth() + 1).toString().padStart(2, '0');
+            const day = d.getDate().toString().padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+    </script>
+</body>
+</html>

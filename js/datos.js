@@ -9,11 +9,12 @@ const municipiosConSubregion = {
     "Angelópolis": "Suroeste",
     "Angostura": "Norte",
     "Anorí": "Nordeste",
+    "Antioquia": "Occidente",
     "Anzá": "Occidente",
     "Apartadó": "Urabá",
     "Arboletes": "Urabá",
     "Argelia": "Oriente",
-    "Armenia": "Oriente",
+    "Armenia": "Occidente",
     "Barbosa": "Valle de Aburrá",
     "Bello": "Valle de Aburrá",
     "Belmira": "Norte",
@@ -29,18 +30,23 @@ const municipiosConSubregion = {
     "Caracolí": "Magdalena Medio",
     "Caramanta": "Suroeste",
     "Carepa": "Urabá",
-    "Carolina": "Norte",
+    "Carolina del Príncipe": "Norte",
     "Caucasia": "Bajo Cauca",
     "Chigorodó": "Urabá",
     "Cisneros": "Nordeste",
+    "Ciudad Bolívar": "Suroeste",
     "Cocorná": "Oriente",
     "Concepción": "Oriente",
-    "Concordia": "Occidente",
+    "Concordia": "Suroeste",
     "Copacabana": "Valle de Aburrá",
     "Dabeiba": "Occidente",
     "Donmatías": "Norte",
     "Ebéjico": "Occidente",
     "El Bagre": "Bajo Cauca",
+    "El Carmen de Viboral": "Oriente",
+    "El Peñol": "Oriente",
+    "El Retiro": "Oriente",
+    "El Santuario": "Oriente",
     "Entrerríos": "Norte",
     "Envigado": "Valle de Aburrá",
     "Fredonia": "Suroeste",
@@ -73,14 +79,12 @@ const municipiosConSubregion = {
     "Nechí": "Bajo Cauca",
     "Necoclí": "Urabá",
     "Olaya": "Occidente",
-    "Peñol": "Oriente",
     "Peque": "Occidente",
     "Pueblorrico": "Suroeste",
     "Puerto Berrío": "Magdalena Medio",
     "Puerto Nare": "Magdalena Medio",
     "Puerto Triunfo": "Magdalena Medio",
     "Remedios": "Nordeste",
-    "Retiro": "Oriente",
     "Rionegro": "Oriente",
     "Sabanalarga": "Occidente",
     "Sabaneta": "Valle de Aburrá",
@@ -92,13 +96,12 @@ const municipiosConSubregion = {
     "San José de la Montaña": "Norte",
     "San Juan de Urabá": "Urabá",
     "San Luis": "Oriente",
-    "San Pedro de Urabá": "Urabá",
     "San Pedro de los Milagros": "Norte",
+    "San Pedro de Urabá": "Urabá",
     "San Rafael": "Oriente",
     "San Roque": "Nordeste",
     "San Vicente": "Oriente",
     "Santa Bárbara": "Suroeste",
-    "Santa Fe de Antioquia": "Occidente",
     "Santa Rosa de Osos": "Norte",
     "Santo Domingo": "Nordeste",
     "Segovia": "Nordeste",
@@ -121,89 +124,9 @@ const municipiosConSubregion = {
     "Yarumal": "Norte",
     "Yolombó": "Nordeste",
     "Yondó": "Magdalena Medio",
-    "Zaragoza": "Bajo Cauca"
+    "Zaragoza": "Bajo Cauca",
+
 };
-
-// Llenar el select con los municipios
-const select = document.getElementById("municipioSelect");
-for (const municipio in municipiosConSubregion) {
-    const option = document.createElement("option");
-    option.value = municipio;
-    option.textContent = municipio;
-    select.appendChild(option);
-}
-
-// Función que se llama cuando cambia el municipio seleccionado
-function actualizarSubregion() {
-    const municipioSelect = document.getElementById("municipioSelect");
-    const subregionInput = document.getElementById("Subregion");
-    
-    const selectedMunicipio = municipioSelect.value;
-    
-    if (selectedMunicipio) {
-        // Asignar la subregión correspondiente
-        subregionInput.value = municipiosConSubregion[selectedMunicipio] || '';
-    } else {
-        // Limpiar el campo de subregión si no se selecciona municipio
-        subregionInput.value = '';
-    }
-}
-
-
-
-// Array con los indicadores
-const indicadores = [
-    "Espacio público adecuado",
-    "Equipamientos construidos",
-    "Túnel y vías e acceso construidas",
-    "Aeropuertos o aeródromos mejorados",
-    "Sistema de transporte público de pasajeros fortalecido",
-    "Vía primaria mantenida",
-    "Cables aéreos sostenibles construidos y operando",
-    "Muelles o embarcaderos mejorados",
-    "Vías secundarias mejoradas",
-    "Vías secundarias mantenidas",
-    "Vías terciarias mejoradas",
-    "Vías terciarias mantenidas",
-    "Vía urbana mejorada",
-    "Estudios y diseños para proyectos de infraestructura realizados",
-    "Vía férrea estructurada",
-    "Estudios de preinversión para el sistema férreo realizado",
-    "Sistema de transporte público de pasajeros cofinanciado"
-];
-
-// Obtener el select por su id
-const indc = document.getElementById("Indicador");
-
-// Crear las opciones dinámicamente
-indicadores.forEach(indicador => {
-    const option = document.createElement("option");
-    option.value = indicador;
-    option.textContent = indicador;
-    indc.appendChild(option);
-});
-
-// Estado del contrato
-const estadosContrato = {
-    0: "Por iniciar",
-    1: "En estructuración",
-    2: "En ejecución",
-    3: "Suspendido",
-    4: "Por liquidar",
-    5: "Liquidado"
-};
-
-// Obtener el select de estado del contrato
-const estadoSelect = document.getElementById("estado-contrato");
-
-// Llenar el select con los estados
-for (const estado in estadosContrato) {
-    const option = document.createElement("option");
-    option.value = estado;
-    option.textContent = estadosContrato[estado];
-    estadoSelect.appendChild(option);
-}
-
 
 // Dependencias
 const dependencias = {
@@ -211,6 +134,7 @@ const dependencias = {
     "Dirección Asuntos Legales": "Dirección Asuntos Legales",
     "Dirección Estructuración Proyectos": "Dirección Estructuración Proyectos",
     "Dirección Gestión Social y Ambiental": "Dirección Gestión Social y Ambiental",
+    "Dirección Gestión Predial":"Dirección Gestión Predial",
     "Dirección Instrumentos Financiación": "Dirección Instrumentos Financiación",
     "Dirección Proyectos Especiales": "Dirección Proyectos Especiales",
     "Dirección Desarrollo Físico": "Dirección Desarrollo Físico",
@@ -221,7 +145,6 @@ const dependencias = {
     "No aplica": "No aplica"
 };
 
-// Obtener el select de dependencia
 const dependenciaSelect = document.getElementById("dependencia");
 
 // Llenar el select con las dependencias
@@ -230,22 +153,36 @@ for (const clave in dependencias) {
     option.value = clave;
     option.textContent = dependencias[clave];
     dependenciaSelect.appendChild(option);
-}
+
+};
+
+
+
+document.addEventListener("DOMContentLoaded", function () {
+    const select = document.getElementById("municipioSelect");
+
+    // Crear un "placeholder" vacío como primera opción
+    const placeholderOption = document.createElement("option");
+    placeholderOption.value = "";
+    placeholderOption.textContent = "Seleccione un municipio";
+    placeholderOption.disabled = true;
+    placeholderOption.selected = true;
+    select.appendChild(placeholderOption);
+
+    // Llenar el select con los municipios
+    for (const municipio in municipiosConSubregion) {
+        const option = document.createElement("option");
+        option.value = municipio;
+        option.textContent = municipio;
+        select.appendChild(option);
+    }
+
+    // Inicializa MultiSelectTag después de llenar el select
+
+});
 
 
 
 
-function nextStep(step) {
-    document.getElementById('step-' + step).style.display = 'none';
-    document.getElementById('step-' + (step + 1)).style.display = 'block';
-  }
-  
-  function prevStep(step) {
-    document.getElementById('step-' + step).style.display = 'none';
-    document.getElementById('step-' + (step - 1)).style.display = 'block';
-  }
 
 
-function calcularAvances() {
-    const perc_avance = document.getElementById()
-}

@@ -1,515 +1,443 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AppSIF</title>
-    <!-- Enlace al archivo de estilo CSS -->
-    <link rel="stylesheet" href="css\main.css">
-    <link rel="stylesheet" href="css\table.css">
-    <link rel="stylesheet" href="css\modal.css">
+    <link rel="stylesheet" href="style/header.css">
+    <link rel="stylesheet" href="style/table.css">
+    <link rel="stylesheet" href="style/modal.css">
+    <link rel="stylesheet" href="style/login.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/habibmhamadi/multi-select-tag@3.1.0/dist/css/multi-select-tag.css">
+    <script src="https://cdn.jsdelivr.net/gh/habibmhamadi/multi-select-tag@3.1.0/dist/js/multi-select-tag.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.2.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.2.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/ui/6.0.1/firebase-ui-auth.js"></script>
+    <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/6.0.1/firebase-ui-auth.css" />
+    <link href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700,900,1&display=swap" rel="stylesheet">
 
-    
-    <!-- Importar Bootstrap 5 JS desde CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-
+    <!-- multiselec -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <script src="https://www.gstatic.com/firebasejs/11.0.2/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/11.0.2/firebase-auth-compat.js"></script>
-    <!-- Incluir la librería SheetJS -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.3/xlsx.full.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- multiselec tom -->
+    <link href="https://cdn.jsdelivr.net/npm/tom-select@2.4.2/dist/css/tom-select.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/tom-select@2.4.2/dist/js/tom-select.complete.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/autonumeric@4.6.0"></script>
+
+    <!-- Agregar SheetJS CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
 
 
 
 </head>
 <body>
-    <!-- Formulario de inicio de sesión -->
-
-    <form class="form" id="iniciar-seccion" style="display: none;">
-      <p class="form-title">Iniciar Sesión</p>
-      <div class="input-container">
-         <input type="email" name="email" class="input-seccion" placeholder="Enter email" required>
-         <span></span>
-      </div>
-      <div class="input-container">
-         <input type="password" class="input-seccion" name="password" placeholder="Enter password" required>
-      </div>
-      <button type="submit" class="submit">
-         Ingresar
-      </button>
-      <p class="signup-link">
-            ¿Olvidó su contraseña?
-         <a href="https://wa.me/573001234567?text=Hola,%20quiero%20información%20sobre%20sus%20servicios" target="_blank">
-            Contacte al Administrador
-        </a>
-      </p>
-    </form>
-   
-
-
-    <section id="tabla-contratos" >
-    <div class="registro-datos">
-        <!-- Filtro para el número de contrato -->
-        <div class="emcabezado-tabla">
-            <h3>Registro de contratos - SIF</h3>
-            <img src="" alt="">
+    <section id="section-login" style="display: block;">
+        <div class="login">
+            <form>
+                <div class="contenedor-login">
+                    <h2>Iniciar Sesión</h2>
+                    <div class="input-icon">
+                        <i class="fa-solid fa-envelope"></i> <!-- Icono de correo electrónico -->
+                        <input type="email" id="email" placeholder="Correo electrónico" autocomplete="on">
+                    </div>
+                    <div class="input-icon">
+                        <i class="fa-solid fa-lock"></i> <!-- Icono de candado para contraseña -->
+                        <input type="password" id="password" placeholder="Contraseña" autocomplete="off">
+                    </div>
+                    <button id="btn-login">Ingresar</button>
+                    <p>¿Olvidó su contraseña?</p>
+                    <p><a href="">Contacte al administrador</a></p>
+                </div>
+            </form>
         </div>
-        <div class="registrar">
-            <div class="control-busqueda">
-                <button class="new" id="descargar">
-                    <i class="fa-solid fa-magnifying-glass"></i>
-                </button>
-                <input type="text" class="input-busqueda" id="filtro-contrato" autocomplete="off" placeholder="Introduce el número de contrato o palabra clave">
+    </section>
+    
+    
+    
+    
+    <section id="encabezado" style="display: none;">
+        <div class="header-contenedor">
+            <div class="nombre">
+                <h3>AppSIF.cloud</h3>
             </div>
-
-            <button class="new-boton" id="descargar" onclick="borrar()">
-                <i class="fa-solid fa-cloud-arrow-up"></i>
-            </button>
-            <button class="new-boton" id="descargar" onclick="descargarExcel()">
-                <i class="fa-solid fa-file-arrow-down"></i>
-            </button>
-            <button class="boton-registro" id="abrirregistro" onclick="mostrarformulario()">
-                <i class="fas fa-plus"></i>
-                <span>Agregar</span>
-            </button>
-        </div>
-
-        <div class="contendor-tabla">
-            <div class="crud-container">
-                <div class="table-responsive" style="max-height: 400px;">
-                    <table id="example" class="tablaRegistro table table-bordered table-striped table-hover">
-                        <thead class="table-dark">
-                            <tr>
-                                <th scope="col">Contrato</th>
-                                <th scope="col">Dirección</th>
-                                <th scope="col">Municipio</th>
-                                <th scope="col">Objeto</th>
-                                <th scope="col">Eliminar</th>
-                                <th scope="col">Editar</th>
-                            </tr>
-                        </thead>
-                        <tbody id="cuerpo-tabla">
-                            <!-- Las filas de la tabla se agregarán dinámicamente aquí -->
-                        </tbody>
-                    </table>
+            <div class="usuarios">
+                <div class="nombre_usuarios">
+                    <h5 id="name_user">Oscar Marquez</h5>
+                    <p id="user_dependecia">Desarrollo fisico</p>
+                </div>
+                <div class="iconoUser">
+                    <i class="fa-solid fa-circle-user fa-2x"></i>
+                </div>
+                <div class="icono-ampliar" id="iconoUser">
+                    <i class="fa-solid fa-angle-up"></i>
                 </div>
             </div>
         </div>
-    </div>
-    <div id="resultado-filtrado" class="resultados-tabla">
-        <p>Contratos encontrados: <span id="cantidad-resultados">0</span></p>
-    </div>
+        <div class="cerrar-sesion" id="cerrarSesionContenedor">
+            <div class="contenedor-opciones">
+                <div class="iconos-sesion">
+                    <i class="fa-regular fa-bell"></i>
+                    <label for="a">Mensajes</label>
+                </div>
+                <div class="iconos-sesion">
+                    <i class="fa-solid fa-users"></i>
+                    <label for="a">Mi organización</label>
+                </div>
+                <div class="iconos-sesion">
+                    <i class="fa-solid fa-gear"></i>
+                    <label for="a">Configuración</label>
+                </div>
+            </div>
+        
+            <div class="close-contenedor" id="close-contenedor">
+                <div class="iconos-sesion">
+                    <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                    <label for="a">Cerrar sesión</label>
+                </div>
+            </div>
+        </div>        
+    </section>
+    
+
+    
+    <section id="tabla-contratos" style="display: none;">
+        <div class="registro-datos">
+            <!-- Filtro para el número de contrato -->
+            <div class="emcabezado-tabla">
+                <h3>Registro de contratos - SIF</h3>
+                <img src="" alt="">
+            </div>
+            <div class="contenedor-general">
+                <div class="registrar">
+                    <div class="control-busqueda">
+                        <button class="new" id="descargar">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                        </button>
+                        <input type="text" class="input-busqueda" id="filtro-contrato" autocomplete="off" placeholder="Introduce el número de contrato o palabra clave">
+                    </div>
+
+                    <button class="new-boton" id="subir" >
+                        <i class="fa-solid fa-cloud-arrow-up" onclick="subirExcel()"></i>
+                    </button>
+                    <button class="new-boton" id="descargar" onclick="descargarExcel()">
+                        <i class="fa-solid fa-file-arrow-down"></i>
+                    </button>
+                    <button class="boton-registro" id="abrirregistro" >
+                        <i class="fas fa-plus"></i>
+                        <span>Agregar</span>
+                    </button>
+                </div>
+
+                <div class="contendor-tabla">
+                    <div class="crud-container">
+                        <div class="table-responsive" style="max-height: 400px;">
+                            <table id="example" class="tablaRegistro table table-bordered table-striped table-hover">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th scope="col">Contrato</th>
+                                        <th scope="col">Dirección</th>
+                                        <th scope="col">Municipio</th>
+                                        <th scope="col">Objeto</th>
+                                        <th scope="col">Eliminar</th>
+                                        <th scope="col">Editar</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="cuerpo-tabla">
+                                    <!-- Las filas de la tabla se agregarán dinámicamente aquí -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div id="resultado-filtrado" class="resultados-tabla">
+                    <p>Contratos encontrados: <span id="cantidad-resultados">0</span></p>
+                </div>
+            </div>
+        </div>
     </section>
 
-  
-      
-      
 
 
-    <section id="formulario"  style="display: none;">
-        <div class="modal-contenedor" id="modal-contenedor">
-            <div class="modal">
-                <form id="form-multipasos" class="form-cont">
-                    <!-- Navegación de Tabs -->
-                    <div class="contenedor-titulo">
-                        <ul class="nav nav-pills" id="tabNavigation" role="tablist">
-                            <li class="nav-item" role="presentation">
-                                <a class="nav-link active" id="tab-step-1" data-bs-toggle="pill" href="#step-1" role="tab" aria-controls="step-1" aria-selected="true">General</a>
-                            </li>
-                            <li class="nav-item" role="presentation">
-                                <a class="nav-link" id="tab-step-2" data-bs-toggle="pill" href="#step-2" role="tab" aria-controls="step-2" aria-selected="false">Financiero</a>
-                            </li>
-                            <li class="nav-item" role="presentation">
-                                <a class="nav-link" id="tab-step-3" data-bs-toggle="pill" href="#step-3" role="tab" aria-controls="step-3" aria-selected="false">Avances</a>
-                            </li>
-                            <li class="nav-item" role="presentation">
-                                <a class="nav-link" id="tab-step-4" data-bs-toggle="pill" href="#step-4" role="tab" aria-controls="step-4" aria-selected="false">Supervisión</a>
-                            </li>
-                            <li class="nav-item" role="presentation">
-                                <a class="nav-link" id="tab-step-5" data-bs-toggle="pill" href="#step-5" role="tab" aria-controls="step-5" aria-selected="false">Impactos</a>
-                            </li>
-                        </ul>
+
+    <section id="seccion-modal" style="display: none;">
+        <div class="modal-registro">
+            <div class="cotenedor-registro">
+
+                <div class="contenido-modal">
+                    <div class="tab-box">
+                        
+                        <div class="tab-button"><i class="fa-solid fa-info-circle"></i> <p>General</p></div>
+                        <div class="tab-button"><i class="fa-solid fa-wallet"></i><p> Financiero</p></div>
+                        <div class="tab-button"><i class="fa-solid fa-chart-line"></i> <p>Avances</p></div>
+                        <div class="tab-button"><i class="fa-solid fa-eye"></i> <p>Supervisión</p></div>
+                        <div class="tab-button"><i class="fas fa-exclamation-triangle"></i> <p>Impactos</p></div>
+                        <div class="line"></div>
                     </div>
-            
-                    <div class="tab-content" id="tabContent">
-                        <!-- Paso 1: Información General -->
-                        <div id="step-1" class="tab-pane fade show active" role="tabpanel" aria-labelledby="tab-step-1">
-            
-                            <div class="container-fila">
-                                <div class="row">
-                                    <div class="mb-3">
-                                        <label for="Contrato" class="form-label">Contrato/Convenio</label>
-                                        <input type="text" class="form-control" id="Contrato" placeholder="Número de contrato/convenio" required>
-                                    </div>
-                                    <div class="col">
-                                        <label for="Estado" class="form-label">Estado del Contrato</label>
-                                        <select class="form-control" id="estado-contrato" required>
-                                            <option value="" selected disabled>Seleccione el estado del contrato</option>
-                                        </select>
-                                    </div>
+                
+                    <div class="tabs-content">
+                        <div class="tab-panel" id="content-1">
+                            <h3>Información General</h3>
+                            <div class="input-doble">
+                                <div class="doble">
+                                    <label for="Contrato" class="form-label">Contrato/Convenio</label>
+                                    <input type="text" class="input-text" placeholder="Ingrese No Contrato/Convenio" id="Contrato" autocomplete="off"> 
                                 </div>
-                            </div>
-
-
-                            <div class="mb-3">
-                                <label for="Objeto" class="form-label">Objeto</label>
-                                <textarea class="form-control" id="Objeto" rows="3" required></textarea>
-                            </div>
-                            <div class="mb-3">
-                                <label for="contratista" class="form-label">Contratista</label>
-                                <input type="text" class="form-control" id="contratista" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="inter" class="form-label">Interventoría</label>
-                                <input type="text" class="form-control" id="inter" required>
-                            </div>
-            
-                            <!-- Fila de Unidad y Fecha de Inicio -->
-                            <div class="contenedor-elemento">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <label for="Unidad" class="form-label">Unidad</label>
-                                        <select class="form-control" id="Unidad" required>
-                                        <option value="" selected disabled>Seleccione una unidad</option>
-                                        <option value="kilometros">Kilómetros</option>
-                                        <option value="numero">Número</option>
-                                        </select>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label for="Fecha_inicio" class="form-label">Fecha de Inicio</label>
-                                        <input type="date" class="form-control" id="Fecha_inicio" required>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label for="Fecha_actualizacion" class="form-label">Fecha de Actualización</label>
-                                        <input type="date" class="form-control" id="Fecha_actualizacion" required>
-                                    </div>
-                                    
-                                </div>
-                            </div>
-                            
-            
-                            <div class="mb-3">
-                                <label for="Indicador" class="form-label">Indicador</label>
-                                <select class="form-control" id="Indicador" required>
-                                    <option value="" selected disabled>Seleccione un indicador</option>
-                                </select>
-                            </div>
-            
-                            <!-- Fila de Municipio y Subregión -->
-                            <div class="contenedor-fila">
-                                <div class="row">
-                                    <div class="col">
-                                        <label for="Municipio" class="form-label">Municipio</label>
-                                        <select id="municipioSelect" class="form-control" required onchange="actualizarSubregion()">
-                                            <option value="">Seleccionar municipio</option>
-                                        </select>
-                                    </div>
-                                    <div class="col">
-                                        <label for="Subregion" class="form-label">Subregión</label>
-                                        <input type="text" class="form-control" id="Subregion" readonly>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-            
-                        <!-- Paso 2: Estado y Financiamiento -->
-                        <div id="step-2" class="tab-pane fade" role="tabpanel" aria-labelledby="tab-step-2">
-
-                            
-                            <!-- Fila de Estado del Contrato y Fuente de Financiación -->
-                            <div class="contenedor-input">
-                                <div class="col-md-6">
-                                    <label for="tipo-proy" class="form-label">Tipo de proyecto</label>
-                                    <select class="form-control-2" id="tipo-proy" required>
-                                    <option value="" selected disabled>Seleccione un tipo de proyecto</option>
-                                    <option value="EYD">170161 - Mantenimiento y operación Túnel del Toyo</option>
-                                    <option value="EYD">170160 - Mantenimiento e intervencion de Vias Urbanas</option>
-                                    <option value="EYD">170159 - Estudios y diseños para Mejoramiento de red vial</option>
-                                    <option value="MRV">170158 - MR Red Vial</option>
-                                    <option value="RVS">170156 - MM Red Vial Secundaria</option>
-                                    <option value="RVT">170155 - MM Red Vial Terciaria</option>
-                                    <option value="Metro">170152 - Ampliacion capacidad Metro de Medellín</option>
-
-                                
+                                <div class="doble">
+                                    <label for="Estado" class="form-label">Estado del Contrato</label>
+                                    <select class="select-control" id="estado-contrato">
+                                        <option value="" selected disabled>Seleccione el estado del contrato</option>
+                                        <option value="Por iniciar">Por iniciar</option>
+                                        <option value="En estructuración">En estructuración</option>
+                                        <option value="En Ejecución">En ejecución</option>
+                                        <option value="Suspendido">Suspendido</option>
+                                        <option value="Por liquidar">Por liquidar</option>
+                                        <option value="Liquidado">Liquidado</option>
+                                        <option value="Anulado">Anulado</option>
+                                        <option value="Otro">Otro</option>
                                     </select>
                                 </div>
                             </div>
-
-                            <label for="Fuente_financiacion" class="form-label">Fuente de Financiación</label>
-                            <div class="container-check">
-                            <div class="row">
-                                <!-- Primer Checkbox -->
-                                <div class="checkbox-wrapper-46">
-                                    <input type="checkbox" id="cbx-A" class="inp-cbx" />
-                                    <label for="cbx-A" class="cbx">
-                                        <span>
-                                            <svg viewBox="0 0 12 10" height="10px" width="12px">
-                                                <polyline points="1.5 6 4.5 9 10.5 1"></polyline>
-                                            </svg>
-                                        </span>
-                                        <span>Recursos propios</span>
-                                    </label>
-                                </div>
-
-                                <!-- Segundo Checkbox -->
-                                <div class="checkbox-wrapper-46">
-                                    <input type="checkbox" id="cbx-B" class="inp-cbx" />
-                                    <label for="cbx-B" class="cbx">
-                                        <span>
-                                            <svg viewBox="0 0 12 10" height="10px" width="12px">
-                                                <polyline points="1.5 6 4.5 9 10.5 1"></polyline>
-                                            </svg>
-                                        </span>
-                                        <span>Regalías</span>
-                                    </label>
-                                </div>
-
-                                <!-- Tercer Checkbox -->
-                                <div class="checkbox-wrapper-46">
-                                    <input type="checkbox" id="cbx-C" class="inp-cbx" />
-                                    <label for="cbx-C" class="cbx">
-                                        <span>
-                                            <svg viewBox="0 0 12 10" height="10px" width="12px">
-                                                <polyline points="1.5 6 4.5 9 10.5 1"></polyline>
-                                            </svg>
-                                        </span>
-                                        <span>Valorización</span>
-                                    </label>
-                                </div>
-                                <!-- cuarto Checkbox -->
-                                <div class="checkbox-wrapper-46">
-                                    <input type="checkbox" id="cbx-D" class="inp-cbx" />
-                                    <label for="cbx-D" class="cbx">
-                                        <span>
-                                            <svg viewBox="0 0 12 10" height="10px" width="12px">
-                                                <polyline points="1.5 6 4.5 9 10.5 1"></polyline>
-                                            </svg>
-                                        </span>
-                                        <span>Mixta</span>
-                                    </label>
-                                </div>
-                                
+                            <div class="doble">
+                                <label for="Objeto" class="form-label">Objeto</label>
+                                <textarea class="input-multitex" placeholder="Ingrese el objeto del Contrato/Convenio" id="Objeto" rows="3"></textarea>
                             </div>
+                            <div class="input-doble">
+                                <div class="doble">
+                                    <label for="Municipio" class="form-label">Municipio</label>
+                                    <select id="municipioSelect" multiple class="select-control">
+                                    </select>
+                                </div>
                             </div>
-                            <!-- Fila de Aporte Departamento y Aporte Municipio -->
-                             <div class="contenedor-elemento">
-                                <div class="row">
-                                    <div class="col">
-                                        <label for="Aporte_dto" class="form-label">Aporte Departamento</label>
-                                        <div class="input-moneda">
-                                            <span class="currency-prefix">$</span>
-                                            <input type="number" class="valor" id="Aporte_dto" min="0" step="0.01" placeholder="0.00" required oninput="calcularCampos()">
-                                            <span class="currency-suffix">COP</span>
-                                        </div>  
+                            <div class="doble">
+                                <label for="subregion" class="form-label">Subregión</label>
+                                <select id="subregion" class="select-control">
+                                    <option value="" selected disabled>Seleccione la subregión</option>
+                                    <option value="Bajo Cauca">Bajo Cauca</option>
+                                    <option value="Magdalena Medio">Magdalena Medio</option>
+                                    <option value="Nordeste">Nordeste</option>
+                                    <option value="Norte">Norte</option>
+                                    <option value="Occidente">Occidente</option>
+                                    <option value="Oriente">Oriente</option>
+                                    <option value="Suroeste">Suroeste</option>
+                                    <option value="Urabá">Urabá</option>
+                                    <option value="Valle de Aburrá">Valle de Aburrá</option>
+                                </select>                                    
+                            </div>
+                            <div class="doble">
+                                <label for="contratista" class="form-label">Contratista</label>
+                                <input type="text" class="input-text" placeholder="Ingrese el contratista" autocomplete="off" id="contratista" required>
+                            </div>
+                            <div class="doble">
+                                <label for="interventoria" class="form-label">Interventoría</label>
+                                <input type="text" class="input-text" placeholder="Ingrese la interventoría" autocomplete="off" id="interventoria" required>
+                            </div>
+                            <div class="input-doble">
+                                <div class="doble">
+                                    <label for="Unidad" class="form-label">Unidad</label>
+                                    <select class="select-control" id="Unidad" required>
+                                        <option value="" selected disabled>Seleccione una unidad</option>
+                                        <option value="Kilómetros">Kilómetros</option>
+                                        <option value="Número">Número</option>
+                                    </select>
+                                </div>
+                                <div class="doble">
+                                    <label for="vigencia" class="form-label">Vigencia</label>
+                                    <input type="number" class="input-date" id="vigencia">
+                                </div>
+                            </div>
+
+                            <div class="contenedor-triple">
+                                <div class="input-tripe">
+                                    <div class="doble">
+                                        <label for="Fecha_inicio" class="form-label">Fecha de Inicio</label>
+                                        <input type="date" class="input-date" id="Fecha_inicio" required>
                                     </div>
-                                    <div class="col">
-                                        <label for="Aporte_mpio" class="form-label">Aporte Municipio</label>
-                                        <div class="input-moneda">
-                                            <span class="currency-prefix">$</span>
-                                            <input type="number" class="valor" id="Aporte_mpio" min="0" step="0.01" placeholder="0.00" required oninput="calcularCampos()">
-                                            <span class="currency-suffix">COP</span>
-                                        </div>  
+                                    <div class="doble">
+                                        <label for="Fecha_termina" class="form-label">Fecha de terminación</label>
+                                        <input type="date" class="input-date" id="Fecha_termina" required>
+                                    </div>
+                                    <div class="doble">
+                                        <label for="Fecha_actualizacion" class="form-label">Fecha de Actualización</label>
+                                        <input type="date" class="input-date" id="Fecha_actualizacion" required>
                                     </div>
                                 </div>
                             </div>
-            
-                            <div class="mb-3">
-                                <label for="Aporte_total" class="form-label">Total Aportes</label>
-                                <input type="number" class="form-control" id="Aporte_total" min="0" step="0.01" disabled placeholder="0.00" readonly>
-                            </div>
-            
-                            <!-- Fila de Aporte Departamento (%) y Aporte Municipio (%) -->
-                            <div class="row">
-                                <div class="col">
-                                    <label for="Aporte_dto_percent" class="form-label">Aporte Departamento (%)</label>
-                                    <input type="number" class="form-control" id="Aporte_dto_percent" disabled readonly>
-                                </div>
-                                <div class="col">
-                                    <label for="Aporte_mpio_percent" class="form-label">Aporte Municipio (%)</label>
-                                    <input type="number" class="form-control" id="Aporte_mpio_percent" disabled readonly>
-                                </div>
+                            
+                            <div class="doble">
+                                <label for="Indicador" class="form-label">Indicador</label>
+                                <select class="select-control" id="Indicador" multiple placeholder="Seleccione el indicador" autocomplete="off">
+                                    <option value="">Seleccione el indicador</option>
+                                    <option value="Espacio público adecuado">Espacio público adecuado</option>
+                                    <option value="Equipamientos construidos">Equipamientos construidos</option>
+                                    <option value="Túnel y vías de acceso construidas">Túnel y vías de acceso construidas</option>
+                                    <option value="Aeropuertos o aeródromos mejorados">Aeropuertos o aeródromos mejorados</option>
+                                    <option value="Sistema de transporte público de pasajeros fortalecido">Sistema de transporte público de pasajeros fortalecido</option>
+                                    <option value="Vía primaria mantenida">Vía primaria mantenida</option>
+                                    <option value="Cables aéreos sostenibles construidos y operando">Cables aéreos sostenibles construidos y operando</option>
+                                    <option value="Muelles o embarcaderos mejorados">Muelles o embarcaderos mejorados</option>
+                                    <option value="Vías secundarias mejoradas">Vías secundarias mejoradas</option>
+                                    <option value="Vías secundarias mantenidas">Vías secundarias mantenidas</option>
+                                    <option value="Vías terciarias mejoradas">Vías terciarias mejoradas</option>
+                                    <option value="Vías terciarias mantenidas">Vías terciarias mantenidas</option>
+                                    <option value="Vía urbana mejorada">Vía urbana mejorada</option>
+                                    <option value="Estudios y diseños para proyectos de infraestructura realizados">Estudios y diseños para proyectos de infraestructura realizados</option>
+                                    <option value="Vía férrea estructurad">Vía férrea estructurada</option>
+                                    <option value="Estudios de preinversión para el sistema férreo realizado">Estudios de preinversión para el sistema férreo realizado</option>
+                                    <option value="Sistema de transporte público de pasajeros cofinanciado">Sistema de transporte público de pasajeros cofinanciado</option>
+                                </select>
                             </div>
                         </div>
-            
-                        <!-- Paso 3: Avances del Proyecto -->
-                        <div id="step-3" class="tab-pane fade" role="tabpanel" aria-labelledby="tab-step-3">
-
-                            <div class="avances">
-                            <!-- Fila de Meta y Avance de la Meta -->
-                             <div class="contenedor-elemento">
-                                <div class="row">
-                                    <div class="col">
-                                        <label for="meta" class="form-label">Meta</label>
-                                        <input type="number" class="form-control" id="meta" oninput="calcularCampos()" min="0" step="0.01" placeholder="Cantidad total según alcance" required>
-                                    </div>
-                                    <div class="col">
-                                        <label for="avance-meta" class="form-label">Avance de la Meta</label>
-                                        <input type="number" class="form-control" id="avance-meta" oninput="calcularCampos()" min="0" step="0.01" placeholder="Cantidad ejecutada a la fecha" required>
-                                    </div>
-                                </div>
-                                </div>
-            
-                            <div class="mb-3">
-                                <label for="pago-contratista" class="form-label">Desembolsos</label>
-                                <div class="input-moneda">
-                                    <span class="currency-prefix">$</span>
-                                    <input type="number" class="valor" oninput="calcularCampos()" id="pago-contratista" min="0" step="0.01" placeholder="Desembolsos a la fecha" required>
-                                    <span class="currency-suffix">COP</span>
-                                </div>                                  
+                        <div class="tab-panel" id="content-2">
+                            <h3>Información Financiera</h3>
+                            <div class="doble">
+                                <label for="tipo-proy" class="form-label">Tipo de proyecto</label>
+                                <select class="select-control" id="tipo-proy" required>
+                                <option value="">Tipo de proyecto</option>
+                                <option value="170161">170161 - Mantenimiento y operación Túnel del Toyo</option>
+                                <option value="170160">170160 - Mantenimiento e intervencion de Vias Urbanas</option>
+                                <option value="170159">170159 - Estudios y diseños para Mejoramiento de red vial</option>
+                                <option value="170158">170158 - MR Red Vial</option>
+                                <option value="170156">170156 - MM Red Vial Secundaria</option>
+                                <option value="170155">170155 - MM Red Vial Terciaria</option>
+                                <option value="17152">170152 - Ampliacion capacidad Metro de Medellín</option>
+                                </select>
                             </div>
-            
-                            <!-- Fila de Avance Físico y Avance Financiero -->
-                            <div class="row">
-                                <div class="col">
-                                    <label for="Avance_fisico" class="form-label">Avance Físico (%)</label>
-                                    <input type="number" class="form-control" id="Avance_fisico" min="0" max="100" step="0.01"  placeholder="0.00" disabled required>
+                            <div class="doble">
+                                <label for="fuente-financiacion" class="form-label">Fuente de financiación</label>
+                                <select class="select-control" id="fuente-financiacion" required>
+                                    <option value="" selected disabled>Seleccione la fuente de financiación</option>
+                                    <option value="Recursos propios">Recursos propios</option>
+                                    <option value="Regalías">Regalías</option>
+                                    <option value="Valorización">Valorización</option>
+                                    <option value="Mixta">Mixta</option>
+                                </select>
+                            </div>
+
+                            <div class="input-doble">
+                                <div class="doble">
+                                    <label for="Aporte_dto" class="form-label">Aporte Departamento</label>
+                                    <input type="text" class="input-text" placeholder="Ingrese la interventoría" autocomplete="off" id="Aporte_dto" required>
                                 </div>
-                                <div class="col">
-                                    <label for="Avance_financiero" class="form-label">Avance Financiero (%)</label>
-                                    <input type="number" class="form-control" id="Avance_financiero" min="0" max="100" step="0.01"  placeholder="0.00" disabled required>
+                                <div class="doble">
+                                    <label for="Aporte_mpio" class="form-label">Aporte Municipio</label>
+                                    <input type="text" class="input-text" placeholder="Ingrese la interventoría" autocomplete="off" id="Aporte_mpio" required>
+                                </div>
+                            </div>
+
+                            <div class="doble">
+                                <label for="Aporte_total" class="form-label">Aporte total</label>
+                                <input type="text" class="input-text" placeholder="Ingrese la interventoría" autocomplete="off" id="Aporte_total" required>
+                            </div>
+
+                            <div class="input-doble">
+                                <div class="doble">
+                                    <label for="Aporte_dto_percent" class="form-label">Aporte Departamento (%)</label>
+                                    <input type="text" class="input-text" id="Aporte_dto_percent" autocomplete="off" disabled> 
+                                </div>
+                                <div class="doble">
+                                    <label for="Aporte_mpio_percent" class="form-label">Aporte Municipio (%)</label>
+                                    <input type="text" class="input-text" id="Aporte_mpio_percent" autocomplete="off" disabled> 
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="tab-panel" id="content-3">
+                            <h3>Información de Avances</h3>
+                            <p>La información financiera presentada corresponde a los desembolsos realizados por la Gobernación, mientras que el avance físico refleja el valor de ejecución desarrollado a la fecha, según lo reportado por los contratistas.</p>
+                            <div class="input-doble">
+                                <div class="doble">
+                                    <label for="meta" class="form-label">Meta</label>
+                                    <input type="text" class="input-text" id="meta" autocomplete="off" placeholder="Cantidad total segun alcance"> 
+                                </div>
+                                <div class="doble">
+                                    <label for="avance-meta" class="form-label">Avanve de la meta</label>
+                                    <input type="text" class="input-text" id="avance-meta" autocomplete="off" placeholder="Cantidad ejecutada a la fecha"> 
+                                </div>
+                            </div>
+                            <div class="doble">
+                                <label for="desembolsos" class="form-label">desembolsos</label>
+                                <input type="text" class="input-text" placeholder="Ingrese la interventoría" autocomplete="off" id="desembolsos" required>
+                            </div>
+                            <div class="input-doble">
+                                <div class="doble">
+                                    <label for="avance_fisico" class="form-label">Avance fisico (%)</label>
+                                    <input type="number" class="input-text" id="avance_fisico" readonly disabled>
+                                </div>
+                                <div class="doble">
+                                    <label for="avance_financiero" class="form-label">Avance financiero (%)</label>
+                                    <input type="number" class="input-text" id="avance_financiero" readonly disabled>
                                 </div>
                             </div>
                             <div class="container">
                                 <canvas id="avanceFisico"></canvas>
                                 <canvas id="avanceFinanciero"></canvas>
                             </div>
-                            </div>
                         </div>
-            
-                        <!-- Paso 4: Información de Supervisión -->
-                        <div id="step-4" class="tab-pane fade" role="tabpanel" aria-labelledby="tab-step-4">
-                            <div class="mb-3">
-                                <label for="Dependencia" class="form-label">Dependencia</label>
-                                <select class="form-control" id="dependencia" required>
+                        <div class="tab-panel" id="content-4">
+                            <h3>Contenido de Supervisión</h3>
+                            
+                            <div class="doble">
+                                <label for="dependencia" class="form-label">Dependencia</label>
+                                <select class="select-control" id="dependencia" required>
                                     <option value="" selected disabled>Seleccione una opción</option>
                                 </select>
                             </div>
             
-                            <div class="mb-3">
-                                <label for="Supervisor" class="form-label">Supervisor</label>
-                                <input type="text" class="form-control" id="Supervisor" placeholder="Ingrese el nombre del supervisor" required>
-                            </div>                        
-
-                            <div class="mb-3">
-                                <label for="Observaciones" class="form-label">Observaciones</label>
-                                <textarea class="form-control" id="Observaciones" rows="3"></textarea>
+                            <div class="doble">
+                                <label for="supervisor" class="form-label">Supervisor</label>
+                                <input type="text" class="input-text" id="supervisor" autocomplete="off">
                             </div>
-                            <div class="mb-3">
-                                <label class="form-label" id="est">Estado del contrato</label>
-                                <div class="bar-container">
-                                    <div class="progress-bar" id="progressBar"></div>
-                                </div>
-                                
+                            <div class="doble">
+                                <label for="observaciones" class="form-label">Observaciones</label>
+                                <textarea class="input-multitex" id="observaciones" rows="3"></textarea>
                             </div>
                         </div>
-                        <!-- Paso 5: Información de Supervisión -->
-
-                        <div id="step-5" class="tab-pane fade" role="tabpanel" aria-labelledby="tab-step-3">
-                            <label for="impactos-gen" class="form-label">Impactos generados</label>
-                            <div class="borde" id="impactos-gen">
-                                
-                                <!-- Primer Checkbox -->
-                                <div class="checkbox-wrapper-46">
-                                    <input type="checkbox" id="cbx-1" class="inp-cbx" />
-                                    <label for="cbx-1" class="cbx">
-                                        <span>
-                                            <svg viewBox="0 0 12 10" height="10px" width="12px">
-                                                <polyline points="1.5 6 4.5 9 10.5 1"></polyline>
-                                            </svg>
-                                        </span>
-                                        <span>Ambiental</span>
-                                    </label>
-                                </div>
-                        
-                                <!-- Segundo Checkbox -->
-                                <div class="checkbox-wrapper-46">
-                                    <input type="checkbox" id="cbx-2" class="inp-cbx" />
-                                    <label for="cbx-2" class="cbx">
-                                        <span>
-                                            <svg viewBox="0 0 12 10" height="10px" width="12px">
-                                                <polyline points="1.5 6 4.5 9 10.5 1"></polyline>
-                                            </svg>
-                                        </span>
-                                        <span>Social</span>
-                                    </label>
-                                </div>
-                        
-                                <!-- Tercer Checkbox -->
-                                <div class="checkbox-wrapper-46">
-                                    <input type="checkbox" id="cbx-3" class="inp-cbx" />
-                                    <label for="cbx-3" class="cbx">
-                                        <span>
-                                            <svg viewBox="0 0 12 10" height="10px" width="12px">
-                                                <polyline points="1.5 6 4.5 9 10.5 1"></polyline>
-                                            </svg>
-                                        </span>
-                                        <span>Predial</span>
-                                    </label>
-                                </div>
+                        <div class="tab-panel" id="content-5">
+                            <h3>Contenido de Impactos</h3>
+                            <div class="doble">
+                                <label for="impactos" class="form-label">Impactos</label>
+                                <select class="select-control" id="impactos" required>
+                                    <option value="" selected disabled>Seleccione los tipos de impactos</option>
+                                    <option value="ambiental">Ambiental</option>
+                                    <option value="social">Social</option>
+                                    <option value="predial">Predial</option>
+                                </select>
                             </div>
-                            <div class="descripcion-impacto">
-                                <label for="Observaciones" class="form-label">Ambiental</label>
-                                <textarea class="form-control" id="imp-ambiental" disabled rows="2" required></textarea>
+                            <div class="doble">
+                                <label for="imp-ambiental" class="form-label">Ambiental</label>
+                                <textarea class="input-multitex" id="imp-ambiental" rows="2"></textarea>
                             </div>
-                            <div class="descripcion-impacto">
-                                <label for="Observaciones" class="form-label">Social</label>
-                                <textarea class="form-control" id="imp-social" disabled rows="2" required></textarea>
+                            <div class="doble">
+                                <label for="imp-social" class="form-label">Social</label>
+                                <textarea class="input-multitex" id="imp-social" rows="2"></textarea>
                             </div>
-                            <div class="descripcion-impacto">
-                                <label for="Observaciones" class="form-label">Predial</label>
-                                <textarea class="form-control" id="imp-predial" disabled rows="2" required></textarea>
+                            <div class="doble">
+                                <label for="imp-predial" class="form-label">Predial</label>
+                                <textarea class="input-multitex" id="imp-predial" rows="2"></textarea>
                             </div>
-                        
-                            <div class="cargar-elementos">
-                                <form id="uploadForm" enctype="multipart/form-data">
-                                    <!-- Elemento para cargar una imagen -->
-                                    <label for="imageInput">Cargar Imagen:</label>
-                                    <input type="file" id="imageInput" accept="image/*" />
-                                    
-                            
-                                    <!-- Elemento para cargar un archivo KMZ 
-                                    <label for="kmzInput">Cargar Archivo KMZ:</label>
-                                    <input type="file" id="kmzInput" accept=".kmz" />
-                                    -->
-                            
-
-
-                                </form>
-                            </div> 
                         </div>
-                        
-
                     </div>
-                    <div class="boton-aceptar">
-                        <button class="button-3" id="salir" onclick="cerrarModal()">Cancelar</button>
-                        <button class="button-2" id="guardar-data" onclick="guardar()">Guardar</button>
+                </div>
+                
+                
+                <div class="pie-modal">
+                    <div class="botones-accion">
+                        <button class="boton-cancelar" id="cancelar-btn" onclick="cerrarModal()">Cancel</button>
+                        <button class="boton-guardar" id="guardar-btn" onclick="guardar()">Guardar</button>
                     </div>
-                </form>
-
+                </div>
             </div>
         </div>
     </section>
+
+  <!--<script type="module" src="./js/auth.js"></script>  <script src="./js/app.js"></script>-->
+  <script src="./js/modal.js"></script>
+  <script src="./js/datos.js"></script>
+  <script type="module" src="./js/auth.js"></script>
   
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-    
-    
 
 
-    
-
-    
-
-    <script src="js/graficas.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="js/app.js"></script>
-    <script src="js/steps.js"></script>
-    <script src="js/upload.js"></script>
-
-
-
-      <script src="js/municipios.js"></script>
-
-    
 </body>
 </html>

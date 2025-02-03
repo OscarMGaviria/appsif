@@ -1,0 +1,482 @@
+.modal-registro {
+    user-select: none;
+    position: fixed;
+    display: flex;
+    background-color: rgba(0,0,0,0.7);
+    top: 0px;
+    left: 0px;
+    width: 100vw;
+    height: 100vh;
+    align-items: center;
+    justify-content: center;
+}
+
+
+.cotenedor-registro {
+    display: block;
+    background-color: var(--card);
+    width: 650px;
+    height: 90vh;
+    border-radius: 5px;
+
+}
+
+.head-modal {
+    width: 100%;
+    height: 35px;
+    border-bottom: 1px solid var(--bordes);
+}
+
+
+
+/* Estilos para tab--------------------------------------------------------------------------------------------------------------*/
+
+.tab-box {
+    width: 650px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    position: relative;
+    margin: 0px;
+}
+
+
+.tab-box .tab-button {
+    background: none;
+    font-weight: 400;
+    color: var(--texto-azul);
+    cursor: pointer;
+    padding: 10px;
+    flex: 1; 
+    text-align: center; 
+    transition: background-color 0.3s ease; /* Transición para un cambio de color suave */
+}
+
+
+.tab-button.active {
+ /* Cambia el fondo cuando el botón está activo */
+    color: var(--texto-azul); /* Cambia el color del texto cuando está activo */
+    border: none; /* Evita bordes adicionales si se añaden al activar */
+}
+
+
+.tab-button i {
+    font-size: 30px;   /* Cambiar tamaño del icono */
+    color: var(--azul);        /* Cambiar color */
+    margin: 0; /* Espacio entre el icono y el texto */
+    stroke-width: 2px; 
+    padding: 0px;
+}
+
+
+/* Cambio de estilo cuando el cursor pasa sobre .tab-button */
+.tab-button:hover {
+    background-color: var(--azul); /* Fondo azul */
+    color: var(--card); /* Color de texto blanco */
+}
+
+/* Efecto hover para el ícono dentro de .tab-button */
+.tab-button:hover i {
+    color: var(--card); /* Cambiar color del ícono al pasar el ratón */
+}
+
+/* Opcional: Agregar un efecto de cambio en el texto (p) dentro de .tab-button */
+.tab-button:hover p {
+    font-weight: bold; /* Hacer el texto en negrita */
+    color: var(--card); /* Color de texto blanco */
+
+}
+
+.tab-button p {
+    font-size: 12px;   /* Cambiar tamaño del icono */
+    color: var(--texto-azul);        /* Cambiar color */
+    margin: 0; /* Espacio entre el icono y el texto */
+    stroke-width: 2px; 
+    
+}
+  
+
+.line {
+    position: absolute;
+    top:65px;
+    left: 0px;
+    width: 130px;
+    height: 5px;
+    background-color: var(--azul);
+    border-radius: 10px;
+    transition: all .3s ease-in-out;
+}
+
+/*Contenido central ---------------------------------------------------------------------------------*/
+
+.contenido-modal {
+    height: 80vh;
+    
+
+}
+
+.tabs-content{
+    padding: 0px 20px 5px 20px;
+    width: 100%; /* Define el ancho del div */
+    height: 70vh; /* Define la altura máxima del div */
+    overflow-y: auto; /* Permite el scroll vertical cuando el contenido excede la altura */
+    overflow-x: hidden; /* Oculta el scroll horizontal (opcional) */
+    border: 1px solid #ccc; /* Añade un borde para identificar el área */
+    box-sizing: border-box; /* Asegura que padding y borde no excedan el ancho/alto */
+    background-color: var(--card); /* Color de fondo opcional */
+    
+}
+
+.tabs-content .tab-panel.active {
+    display: block;
+
+}
+
+.tabs-content h3{
+    font-weight: 600;
+    font-size: 14px;
+    padding: 10px 0 20px 0px;
+    border-bottom: 1px solid var(--bordes);
+    
+}
+
+.tabs-content p{
+    font-weight: 400;
+    font-size: 12px;
+    margin-bottom: 20px;
+    color: #646464;
+    
+}
+
+.tabs-content label{
+    color: #000;
+    font-size: 11px;
+    font-weight: 500;
+    margin-bottom: 7px;
+
+}
+
+.tabs-content .tab-panel{
+    display: none;
+}
+
+
+.input-doble {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.form-label {
+    display: block;
+    font-size: 10px;
+    margin-bottom: 1px;
+    color: #333;
+    font-weight: bold;
+    margin: 0;
+    padding: 0;
+
+}
+
+.doble{
+    width: 100%;
+    margin-bottom: 20px;
+
+}
+
+.input-text{
+    font-family: 'Satoshi', sans-serif;
+    border-radius: 5px;
+    border: 1px solid var(--bordes);
+    width: 100%;
+    height: 40px;
+    padding: 1px 10px;
+    margin: 0;
+    outline: none;
+    box-sizing: border-box;
+    color: var(--Color-texto-2);
+}
+
+input::placeholder {
+    color: var(--Color-placeholder); 
+    font-size: 13.5px;
+
+}
+
+select option:disabled {
+    color: var(--Color-placeholder);
+}
+
+.input-text:focus{
+    border-color: var(--Color-hover-input); 
+}
+
+.form-control {
+    width: 100%; /* Ocupa todo el espacio disponible */
+    padding: 10px;
+    height: 35px;
+    margin: 0px;
+    border: 1px solid var(--Color-BorderInput);
+    border-radius: 5px;
+    font-size: 13px;
+    background-color: #f9f9f9;
+    box-sizing: border-box;
+    outline: none;
+    cursor: pointer;
+}
+
+
+.contenedor-triple {
+    display: flex;
+    flex-direction: column; /* Por defecto en pantallas pequeñas */
+    gap: 10px; /* Espacio entre las filas o columnas */
+}
+
+.input-tripe {
+    display: flex;
+    flex-wrap: wrap; /* Permite que los elementos se ajusten si no caben en una línea */
+    justify-content: space-between; /* Distribuye el espacio entre los elementos */
+    align-items: flex-start; /* Alinea los elementos al inicio */
+    gap: 10px; /* Espacio entre los elementos */
+}
+
+.input-tripe > div {
+    flex: 1; /* Todos los elementos ocupan el mismo ancho disponible */
+    min-width: 180px; /* Define un ancho mínimo para evitar que se encojan demasiado */
+}
+
+.form-label {
+    display: block; /* Asegura que las etiquetas estén sobre los inputs */
+    margin-bottom: 5px; /* Espacio entre la etiqueta y el campo */
+    font-weight: bold; /* Hace las etiquetas más visibles */
+}
+
+.input-date,
+.form-control {
+    width: 100%; /* Ocupa todo el ancho del contenedor padre */
+    padding: 8px; /* Espacio interno */
+    border: 1px solid var(--bordes); /* Borde gris */
+    border-radius: 5px; /* Bordes redondeados */
+    font-size: 14px; /* Tamaño de texto */
+    box-sizing: border-box; /* Incluye padding y borde dentro del ancho total */
+    outline: none;
+    color: #000;
+    background-color: var(--card);
+}   
+
+.input-date{
+    color: var(--Color-placeholder);
+    
+}
+
+
+.input-date:focus {
+    border-color: var(--azul); 
+    
+}
+
+/* Asegura que el diseño sea responsivo */
+@media (max-width: 768px) {
+    .input-tripe {
+        flex-direction: column; /* Cambia a disposición vertical en pantallas pequeñas */
+    }
+}
+
+
+/* Elimina los botones de incremento y decremento en los navegadores */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none; /* Elimina los botones en navegadores WebKit (Chrome, Safari) */
+    margin: 0; /* Elimina márgenes */
+    color:#616161;
+}
+
+
+
+.valor {
+    border: none;
+    height: 30px;
+    margin: 0px 5px;
+    text-align: end;
+    color: #8a8989;
+    font-weight: bold;
+    width: 100%;
+    font-size: 14px;
+}
+
+.valor::placeholder {
+    color: var(--Color-placeholder);      
+    font-size: 14px;   
+    opacity: 0.8;    
+    font-weight: 400;
+}
+
+
+
+.valor:focus{
+    outline: none;
+
+
+
+}
+
+.input-moneda {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    height: 35px;
+    border: 1px solid var(--bordes);
+    box-sizing: border-box;
+    padding: 0px 10px;
+    align-items: center;
+    color: var(--gris);
+    background-color: var(--card);
+    border-radius: 5px;
+
+}
+
+.col {
+
+    width: 100%;
+
+}
+
+
+.fila-doble {
+
+    display: flex;
+    justify-content: space-between;
+    box-sizing: border-box;
+
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    gap: 10px;
+
+}
+
+
+.contenedor-check {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+
+
+
+
+/* Efecto al hacer foco (focus) en el select */
+.form-control:focus {
+    border-color: var(--azul); 
+    
+}
+
+/* Estilo para los select cuando son deshabilitados */
+.form-control:disabled {
+    background-color: var(--card);
+    border-color: #ddd;
+}
+
+.input-multitex {
+    width: 100%; 
+    padding: 10px; 
+    border: 1px solid var(--bordes); 
+    border-radius: 5px; 
+    font-size: 14px; 
+    background-color: var(--card); 
+    box-sizing: border-box; 
+    outline: none; 
+    color: var(--Color-texto-2);
+    font-family: 'Satoshi', sans-serif;
+}
+
+/* Efecto cuando el textarea está en foco */
+.input-multitex:focus {
+    border-color: var(--Color-hover-input);
+
+    
+}
+
+.input-multitex::placeholder{
+    font-size: 14px;
+    color:var(--Color-placeholder);
+}
+
+
+
+
+
+/*Contenido pie de modal ---------------------------------------------------------------------------------*/
+
+.pie-modal {
+    display: flex;
+    align-items: center;
+    padding: 0px 10px;
+    height: 10vh; 
+    min-height: 10vh;
+}
+
+
+.botones-accion {
+    width: 100%;
+    gap: 10px;
+    display: flex;
+    justify-content:flex-end;
+    align-items: center;
+}
+
+
+.boton-cancelar {
+    height: 35px;
+    padding: 0px 15px;
+    border: 1px solid var(--bordes);
+    background-color: var(--card);
+    border-radius: 3px;
+}
+
+
+.boton-cancelar:hover {
+    cursor: pointer;
+    box-shadow: 0px 0px 3px 0.2px rgba(0,0,0,0.1);
+}
+
+
+.boton-guardar {
+    height: 35px;
+    border-radius: 3px;
+    padding: 0px 15px;
+    border: none;
+    background-color: var(--azul-boton);
+    color: var(--card);
+}
+
+
+.boton-guardar:hover {
+    cursor: pointer;
+    background-color: var(--azul);
+}
+
+
+/* Elementos tipo select*/
+
+
+.ts-wrapper {
+
+    font-size: 14px;
+}
+
+
+/* Elementos seleccionados en rojo */
+.ts-control .item {
+    background-color: var(--azul) !important;
+    color: var(--card) !important;
+    border-radius: 1px;
+    padding: 2px 8px;
+    font-size: 14px;
+    font-weight: 500;
+    font-family: 'Satoshi', sans-serif !important;
+    border-radius: 3px;
+}
+
+
