@@ -1006,87 +1006,68 @@ const uploadButton = document.getElementById("guardar-btn");
 const fileInput = document.getElementById("inputImg");
 
 uploadButton.addEventListener("click", async () => {
-  const file = fileInput.files[0];
-  
-  // Validar si el archivo existe, pero no hacerlo obligatorio
-  if (file && !file.type.startsWith("image/")) {
-      console.log("Por favor selecciona un archivo de imagen.");
-      return;
-  }
+    const files = fileInput.files; // Obtener todos los archivos seleccionados
+    
+    // Obtener el número de contrato
+    const contractNumber = document.getElementById("Contrato").value.trim();
+    if (!contractNumber) {
+        console.log("Por favor ingresa el número de contrato.");
+        return;
+    }
 
-  // Obtener el número de contrato
-  const contractNumber = document.getElementById("Contrato").value.trim();
-  if (!contractNumber) {
-      console.log("Por favor ingresa el número de contrato.");
-      return;
-  }
+    if (files.length === 0) {
+        console.log("No se seleccionaron imágenes. Continuando sin imágenes.");
+        return;
+    }
 
-  // Si no se seleccionó un archivo, no hacemos nada relacionado con la imagen
-  if (!file) {
-      console.log("No se seleccionó ninguna imagen. Continuando sin imagen.");
-      return;
-  }
-
-  // Función para verificar si la imagen existe y encontrar un nombre único
-  async function getUniqueImageName(contractNumber, fileName) {
-      let index = 1;
-      let uniqueFileName = fileName;
-      const storageRef = ref(storage, `contratos/${contractNumber}/`);
-
-      // Intentar con "Imagen1.jpg", "Imagen2.jpg", etc., hasta encontrar un nombre disponible
-      while (true) {
-          const fileRef = ref(storage, `contratos/${contractNumber}/Imagen${index}${fileName.slice(fileName.lastIndexOf('.'))}`);
-          try {
-              // Verificar si el archivo ya existe
-              await getDownloadURL(fileRef);
-              // Si existe, incrementar el índice
-              index++;
-          } catch (error) {
-              // Si el archivo no existe, usar este nombre
-              uniqueFileName = `Imagen${index}${fileName.slice(fileName.lastIndexOf('.'))}`;
-              break;
-          }
-      }
-      return uniqueFileName;
-  }
-
-  let uniqueFileName = "";
-  if (file) {
-      // Si se seleccionó un archivo, obtener un nombre único para la imagen
-      uniqueFileName = await getUniqueImageName(contractNumber, file.name);
-  }
-
-  // Crear la referencia de Firebase Storage solo si hay un archivo
-  let uploadTask;
-  if (file) {
-      const storageRef = ref(storage, `contratos/${contractNumber}/${uniqueFileName}`);
-      uploadTask = uploadBytesResumable(storageRef, file);
-
-      // Monitorear el progreso de la subida
-      uploadTask.on("state_changed",
-        (snapshot) => {
-            let progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-            console.log(`Subiendo... ${progress.toFixed(2)}%`);
-        },
-        (error) => {
-            console.log("Error al subir: ");
-        },
-        async () => {
-            // Comprobamos si la referencia está definida antes de intentar obtener la URL
-            if (uploadTask.ref) {
-                try {
-                    const downloadURL = await getDownloadURL(uploadTask.ref);
-                    console.log("Subida completada con éxito. URL de descarga:", downloadURL);
-                } catch (error) {
-                    console.log("Error al obtener la URL de descarga:", error);
-                }
-            } else {
-                console.log("La referencia de la carga no está disponible.");
+    // Función para verificar si la imagen existe y encontrar un nombre único
+    async function getUniqueImageName(contractNumber, fileName) {
+        let index = 1;
+        let uniqueFileName = fileName;
+        
+        while (true) {
+            const fileRef = ref(storage, `contratos/${contractNumber}/Imagen${index}${fileName.slice(fileName.lastIndexOf('.'))}`);
+            try {
+                // Verificar si el archivo ya existe
+                await getDownloadURL(fileRef);
+                index++;
+            } catch (error) {
+                // Si el archivo no existe, usar este nombre
+                uniqueFileName = `Imagen${index}${fileName.slice(fileName.lastIndexOf('.'))}`;
+                break;
             }
         }
-      );
-  } else {
-      // Si no hay archivo, puedes agregar lógica para continuar con otros pasos
-      console.log("No se cargó ninguna imagen, pero se pueden continuar otros procesos.");
-  }
+        return uniqueFileName;
+    }
+
+    // Iterar sobre todos los archivos seleccionados
+    for (const file of files) {
+        if (!file.type.startsWith("image/")) {
+            console.log(`El archivo ${file.name} no es una imagen. Se omitirá.`);
+            continue;
+        }
+
+        const uniqueFileName = await getUniqueImageName(contractNumber, file.name);
+        const storageRef = ref(storage, `contratos/${contractNumber}/${uniqueFileName}`);
+        const uploadTask = uploadBytesResumable(storageRef, file);
+
+        uploadTask.on(
+            "state_changed",
+            (snapshot) => {
+                let progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                console.log(`Subiendo ${file.name}... ${progress.toFixed(2)}%`);
+            },
+            (error) => {
+                console.log(`Error al subir ${file.name}:`, error);
+            },
+            async () => {
+                try {
+                    const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+                    console.log(`Subida de ${file.name} completada con éxito. URL: ${downloadURL}`);
+                } catch (error) {
+                    console.log(`Error al obtener la URL de descarga de ${file.name}:`, error);
+                }
+            }
+        );
+    }
 });
