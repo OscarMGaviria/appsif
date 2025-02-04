@@ -4,6 +4,9 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/11.2.0/firebas
 import { getAuth } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-auth.js";
 import { getDatabase } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-database.js";
 import { getStorage } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-storage.js";
+
+import { ref, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-storage.js";
+
 // Ahora puedes usar las funciones relacionadas con la autenticación
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-auth.js";
 
@@ -989,5 +992,95 @@ async function descargarContratosExcel() {
   });
 }
 
+window.descargarExcel = descargarContratosExcel;
 
+
+//-----------------------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------------------
+
+const storage = getStorage(app);
+
+// Obtén los elementos de la interfaz
+const uploadButton = document.getElementById("guardar-btn");
+const fileInput = document.getElementById("inputImg");
+
+uploadButton.addEventListener("click", async () => {
+    const file = fileInput.files[0];
+    
+    // Validar si el archivo existe
+    if (!file) {
+        alert("Selecciona un archivo primero");
+        return;
+    }
+
+    // Validar el tipo de archivo (por ejemplo, solo imágenes)
+    if (!file.type.startsWith("image/")) {
+        alert("Por favor selecciona un archivo de imagen");
+        return;
+    }
+
+    // Obtener el número de contrato
+    const contractNumber = document.getElementById("Contrato").value.trim();
+    if (!contractNumber) {
+        alert("Por favor ingresa el número de contrato.");
+        return;
+    }
+
+    // Función para verificar si la imagen existe y encontrar un nombre único
+    async function getUniqueImageName(contractNumber, fileName) {
+        let index = 1;
+        let uniqueFileName = fileName;
+        const storageRef = ref(storage, `contratos/${contractNumber}/`);
+
+        // Intentar con "Imagen1.jpg", "Imagen2.jpg", etc., hasta encontrar un nombre disponible
+        while (true) {
+            const fileRef = ref(storage, `contratos/${contractNumber}/Imagen${index}${fileName.slice(fileName.lastIndexOf('.'))}`);
+            try {
+                // Verificar si el archivo ya existe
+                await getDownloadURL(fileRef);
+                // Si existe, incrementar el índice
+                index++;
+            } catch (error) {
+                // Si el archivo no existe, usar este nombre
+                uniqueFileName = `Imagen${index}${fileName.slice(fileName.lastIndexOf('.'))}`;
+                break;
+            }
+        }
+        return uniqueFileName;
+    }
+
+    // Obtener un nombre único para la imagen
+    const uniqueFileName = await getUniqueImageName(contractNumber, file.name);
+
+    // Crear una referencia en Firebase Storage con el nombre único
+    const storageRef = ref(storage, `contratos/${contractNumber}/${uniqueFileName}`);
+    const uploadTask = uploadBytesResumable(storageRef, file);
+
+    // Monitorear el progreso de la subida
+    uploadTask.on("state_changed",
+      (snapshot) => {
+          let progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          console.log(`Subiendo... ${progress.toFixed(2)}%`);
+      },
+      (error) => {
+          alert("Error al subir: " + error.message);
+      },
+      async () => {
+          // Comprobamos si la referencia está definida antes de intentar obtener la URL
+          if (uploadTask.ref) {
+              try {
+                  const downloadURL = await getDownloadURL(uploadTask.ref);
+                  console.log("Subida completada con éxito. URL de descarga:", downloadURL);
+              } catch (error) {
+                  console.error("Error al obtener la URL de descarga:", error);
+              }
+          } else {
+              console.error("La referencia de la carga no está disponible.");
+          }
+        }
+    );
+  
+  
+});
 

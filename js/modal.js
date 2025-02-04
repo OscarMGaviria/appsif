@@ -131,3 +131,46 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 
+// Función para validar el tamaño del archivo
+function validarArchivo(input, tipo) {
+    const archivo = input.files[0];
+
+    if (archivo) {
+        const tamañoMaximo = 5 * 1024 * 1024; // 5MB en bytes
+        if (archivo.size > tamañoMaximo) {
+            alert(`El archivo seleccionado (${archivo.name}) supera los 5MB. Selecciona un archivo más pequeño.`);
+            input.value = ""; // Reinicia el input
+            return false;
+        } else {
+            console.log(`${tipo} seleccionado:`, archivo.name);
+            // Cambiar el label según el archivo cargado
+            if (tipo === "Imagen") {
+                document.getElementById('labelImg').textContent = 'Imagen lista';
+                
+            } else if (tipo === "Archivo KMZ") {
+                document.getElementById('labelKmz').textContent = 'Localización lista';
+                
+            }
+        }
+    }
+}
+
+// Evento para el div de imágenes
+document.getElementById('divLoadImg').addEventListener('click', function() {
+    document.getElementById('inputImg').click();
+});
+
+// Evento para el div de KMZ
+document.getElementById('divLoadKmz').addEventListener('click', function() {
+    document.getElementById('inputKmz').click();
+});
+
+// Validar imágenes
+document.getElementById('inputImg').addEventListener('change', function() {
+    validarArchivo(this, "Imagen");
+});
+
+// Validar archivos KMZ
+document.getElementById('inputKmz').addEventListener('change', function() {
+    validarArchivo(this, "Archivo KMZ");
+});
