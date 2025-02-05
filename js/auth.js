@@ -5,7 +5,7 @@ import { getAuth } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-auth
 import { getDatabase } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-database.js";
 import { getStorage } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-storage.js";
 
-import { ref, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-storage.js";
+import { ref, uploadBytesResumable, getDownloadURL, listAll } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-storage.js";
 
 // Ahora puedes usar las funciones relacionadas con la autenticación
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-auth.js";
@@ -366,6 +366,8 @@ async function guardarDatos() {
     var dependencia = document.getElementById("dependencia").value || '';
     var supervisor = document.getElementById("supervisor").value || '';
     var observacion = document.getElementById("observaciones").value;
+    var img = document.getElementById("file_img").value || 0; 
+
    
     //------------------------------------------------------------------------------
     // Impactos
@@ -410,6 +412,7 @@ async function guardarDatos() {
       dependencia: dependencia,
       supervisor: supervisor,
       observacion: observacion,
+      img:img,
 
 
       impacto: impacto,
@@ -729,8 +732,10 @@ export async function loadModal(id) {
     document.getElementById("supervisor").value = datosContrato.supervisor;
 
     document.getElementById("observaciones").value = datosContrato.observacion; 
+    document.getElementById("file_img").value = datosContrato.img || 0; 
 
 
+    
     // Otros campos de texto
     if (value_impactos) {
       value_impactos.setValue(datosContrato.impacto.split(", ") || "");
@@ -740,6 +745,8 @@ export async function loadModal(id) {
     document.getElementById("imp-ambiental").value = datosContrato.imp_amb;
     document.getElementById("imp-social").value = datosContrato.imp_social;
     document.getElementById("imp-predial").value = datosContrato.imp_predial;
+    updateImageCount();
+
 
     var boton = document.getElementById("guardar-btn");
     boton.innerHTML = "Editar";
@@ -804,6 +811,7 @@ export async function editar(id) {
     dependencia: document.getElementById("dependencia").value || '',
     supervisor: document.getElementById("supervisor").value || '',
     observacion: document.getElementById("observaciones").value || '',
+    img : document.getElementById("file_img").value || 0,
 
     //------------------------------------------------------------------------------
     // Impactos
@@ -999,55 +1007,43 @@ window.descargarExcel = descargarContratosExcel;
 //-----------------------------------------------------------------------------------------------
 //-----------------------------------------------------------------------------------------------
 
+
 const storage = getStorage(app);
 
-// Obtén los elementos de la interfaz
+// Elementos de la interfaz
 const uploadButton = document.getElementById("guardar-btn");
 const fileInput = document.getElementById("inputImg");
 
 uploadButton.addEventListener("click", async () => {
-    const files = fileInput.files; // Obtener todos los archivos seleccionados
-    
-    // Obtener el número de contrato
+    const files = Array.from(fileInput.files); // Convertir FileList a Array
     const contractNumber = document.getElementById("Contrato").value.trim();
+
     if (!contractNumber) {
-        console.log("Por favor ingresa el número de contrato.");
+        alert("Por favor ingresa el número de contrato.");
         return;
     }
 
-    if (files.length === 0) {
-        console.log("No se seleccionaron imágenes. Continuando sin imágenes.");
-        return;
+    // Filtrar archivos que no sean imágenes
+    const imageFiles = files.filter(file => file.type.startsWith("image/"));
+
+    // Obtener los nombres de imágenes ya existentes en la carpeta
+    const contractFolderRef = ref(storage, `contratos/${contractNumber}`);
+    let existingFiles = [];
+    
+    try {
+        const listResult = await listAll(contractFolderRef);
+        existingFiles = listResult.items.map(item => item.name); // Obtener nombres de archivos existentes
+    } catch (error) {
+        //console.log("Error al listar archivos existentes:", error);
     }
 
-    // Función para verificar si la imagen existe y encontrar un nombre único
-    async function getUniqueImageName(contractNumber, fileName) {
-        let index = 1;
-        let uniqueFileName = fileName;
-        
-        while (true) {
-            const fileRef = ref(storage, `contratos/${contractNumber}/Imagen${index}${fileName.slice(fileName.lastIndexOf('.'))}`);
-            try {
-                // Verificar si el archivo ya existe
-                await getDownloadURL(fileRef);
-                index++;
-            } catch (error) {
-                // Si el archivo no existe, usar este nombre
-                uniqueFileName = `Imagen${index}${fileName.slice(fileName.lastIndexOf('.'))}`;
-                break;
-            }
-        }
-        return uniqueFileName;
-    }
+    let index = existingFiles.length + 1; // Empezar con el siguiente número disponible
 
-    // Iterar sobre todos los archivos seleccionados
-    for (const file of files) {
-        if (!file.type.startsWith("image/")) {
-            console.log(`El archivo ${file.name} no es una imagen. Se omitirá.`);
-            continue;
-        }
+    for (const file of imageFiles) {
+        const fileExtension = file.name.slice(file.name.lastIndexOf("."));
+        const uniqueFileName = `Imagen${index}${fileExtension}`;
+        index++; // Incrementar índice para la próxima imagen
 
-        const uniqueFileName = await getUniqueImageName(contractNumber, file.name);
         const storageRef = ref(storage, `contratos/${contractNumber}/${uniqueFileName}`);
         const uploadTask = uploadBytesResumable(storageRef, file);
 
@@ -1055,19 +1051,114 @@ uploadButton.addEventListener("click", async () => {
             "state_changed",
             (snapshot) => {
                 let progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                console.log(`Subiendo ${file.name}... ${progress.toFixed(2)}%`);
+                //console.log(`Subiendo ${file.name}... ${progress.toFixed(2)}%`);
             },
             (error) => {
-                console.log(`Error al subir ${file.name}:`, error);
+                //console.log(`Error al subir ${file.name}:`, error);
             },
             async () => {
                 try {
                     const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
                     console.log(`Subida de ${file.name} completada con éxito. URL: ${downloadURL}`);
+                    alert(file.name)
+                    // Actualizar la interfaz con la cantidad de imágenes cargadas
+                    updateImageCount();
                 } catch (error) {
-                    console.log(`Error al obtener la URL de descarga de ${file.name}:`, error);
+                    //console.log(`Error al obtener la URL de descarga de ${file.name}:`, error);
                 }
             }
         );
     }
 });
+
+const filekmz = document.getElementById("inputKmz");
+
+uploadButton.addEventListener("click", async () => {
+    const files = Array.from(filekmz.files); // Convertir FileList a Array
+    const contractNumber = document.getElementById("Contrato").value.trim();
+
+    if (!contractNumber) {
+        alert("Por favor ingresa el número de contrato.");
+        return;
+    }
+
+    // Filtrar archivos que no sean KMZ
+    const kmzFiles = files.filter(file => file.type === "application/vnd.google-earth.kmz");
+
+    // Obtener los nombres de archivos ya existentes en la carpeta
+    const contractFolderRef = ref(storage, `contratos/${contractNumber}`);
+    let existingFiles = [];
+    
+    try {
+        const listResult = await listAll(contractFolderRef);
+        existingFiles = listResult.items.map(item => item.name); // Obtener nombres de archivos existentes
+    } catch (error) {
+        //console.log("Error al listar archivos existentes:", error);
+    }
+
+    let index = existingFiles.length + 1; // Empezar con el siguiente número disponible
+
+    for (const file of kmzFiles) {
+        const fileExtension = file.name.slice(file.name.lastIndexOf("."));
+        const uniqueFileName = `Localizacion${index}${fileExtension}`;
+        index++; // Incrementar índice para el próximo archivo
+
+        const storageRef = ref(storage, `contratos/${contractNumber}/${uniqueFileName}`);
+        const uploadTask = uploadBytesResumable(storageRef, file);
+
+        uploadTask.on(
+            "state_changed",
+            (snapshot) => {
+                let progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                //console.log(`Subiendo ${file.name}... ${progress.toFixed(2)}%`);
+            },
+            (error) => {
+                //console.log(`Error al subir ${file.name}:`, error);
+            },
+            async () => {
+                try {
+                    const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+                    //console.log(`Subida de ${file.name} completada con éxito. URL: ${downloadURL}`);
+                    
+                    // Actualizar la interfaz con la cantidad de archivos cargados
+                    updateKmzCount();
+                } catch (error) {
+                    //console.log(`Error al obtener la URL de descarga de ${file.name}:`, error);
+                }
+            }
+        );
+    }
+});
+
+
+
+
+// Función para actualizar la cantidad de imágenes y archivos KMZ cargados
+async function updateImageCount() {
+  const contractNumber = document.getElementById("Contrato").value.trim();
+  const contractFolderRef = ref(storage, `contratos/${contractNumber}`);
+
+  try {
+      const listResult = await listAll(contractFolderRef);
+
+      // Filtrar solo los archivos de tipo imagen
+      const imageFiles = listResult.items.filter(item => {
+          return item.name.match(/\.(jpg|jpeg|png|gif|bmp|tiff)$/i); // Filtra las extensiones de imagen comunes
+      });
+
+      // Filtrar solo los archivos KMZ
+      const kmzFiles = listResult.items.filter(item => {
+          return item.name.endsWith(".kmz"); // Filtra los archivos KMZ
+      });
+
+      // Asignar el número de imágenes al input correspondiente
+      document.getElementById("file_img").value = imageFiles.length;
+
+      // Asignar el número de archivos KMZ al input correspondiente
+      document.getElementById("file_localizacion").value = kmzFiles.length;
+
+
+  } catch (error) {
+      console.log("Error al actualizar los contadores de archivos:", error);
+  }
+}

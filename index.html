@@ -393,6 +393,16 @@
                                 <label for="observaciones" class="form-label">Observaciones</label>
                                 <textarea class="input-multitex" id="observaciones" rows="3"></textarea>
                             </div>
+                            <div class="input-doble">
+                                <div class="doble">
+                                    <label for="file_img" class="form-label">Imagenes cargadas</label>
+                                    <input type="number" class="input-text" id="file_img" disabled>
+                                </div>
+                                <div class="doble">
+                                    <label for="file_localizacion" class="form-label">Archivos de localización</label>
+                                    <input type="number" class="input-text" id="file_localizacion" disabled>
+                                </div>
+                            </div>
                             <div class="contenedor-load">
                                 <!-- Div para cargar imagen -->
                                 <div class="loadfile" id="divLoadImg">
@@ -400,7 +410,7 @@
                                     <button class="botonload">
                                         <i class="fa-solid fa-image"></i>
                                     </button>
-                                    <input type="file" id="inputImg" accept="image/*">
+                                    <input type="file" multiple id="inputImg" accept="image/*">
                                 </div>
                         
                                 <!-- Div para cargar archivo KMZ -->
