@@ -1,6 +1,7 @@
 // Municipios y sus subregiones
 const municipiosConSubregion = {
     "Abejorral": "Oriente",
+    "Todos":"Todos",
     "Abriaquí": "Occidente",
     "Alejandría": "Oriente",
     "Amagá": "Suroeste",

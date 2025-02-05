@@ -1161,4 +1161,42 @@ async function updateImageCount() {
   } catch (error) {
       console.log("Error al actualizar los contadores de archivos:", error);
   }
-}
+};
+
+document.getElementById("avance-meta").addEventListener("input", function(){
+  let val_meta = parseFloat(document.getElementById("meta").value) || 0;
+  let val_avmeta = parseFloat(document.getElementById("avance-meta").value) || 0;
+
+  if (val_meta > 0) {
+    let percen_avance = (100 * val_avmeta / val_meta).toFixed(2); // Redondear a 2 decimales
+    document.getElementById("avance_fisico").value = percen_avance; // Agregar símbolo %
+  } else {
+    document.getElementById("avance_fisico").value = 0;
+  }
+});
+
+
+document.getElementById("desembolsos").addEventListener("input", function(){
+
+  let valorInput = document.getElementById("Aporte_total").value;
+  let val_desembolso = parseFloat(document.getElementById("desembolsos").value) || 0;
+  console.log("total " + numero);
+  console.log("desm " + val_desembolso);
+  if (valor_total > 0) {
+    let percen_avfinan = (100 * val_desembolso / valor_total).toFixed(2); // Redondear a 2 decimales
+    document.getElementById("avance_financiero").value = percen_avfinan; // Agregar símbolo %
+  } else {
+    document.getElementById("avance_financiero").value = 0;
+  }
+});
+
+
+// Datos iniciales
+const data = {
+  labels: ['Aporte departamento', 'Aporte Municipio'],
+  datasets: [{
+      label: 'Valores',
+      data: [10, 20, 30, 40, 50], // Datos iniciales
+      backgroundColor: ['red', 'orange', 'yellow', 'green', 'blue']
+  }]
+};
