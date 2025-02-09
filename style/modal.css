@@ -38,6 +38,7 @@
     align-items: center;
     position: relative;
     margin: 0px;
+    background: #EFF4FB;
 }
 
 
@@ -480,57 +481,311 @@ input[type="number"]::-webkit-inner-spin-button {
 }
 
 
-
-.contenedor-load {
+/* ----------------------------------------------------------------------------------------------------*/
+/* Parte de codigo que aplica estilos a las listas desplegables usadas para cargar las imagenes y kmz*/
+/* ----------------------------------------------------------------------------------------------------*/
+.contendedor-input {
     display: flex;
-    justify-content: center;
     align-items: center;
-    margin: 0;
-    padding: 0;
+    justify-content:space-between;
+    width: 100%;
     gap: 5px;
 }
-.loadfile {
-    background-color: #fff;
+
+.dropdown {
+    min-width: 150px;
     position: relative;
-    display: flex;
-    gap: 1px;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    padding: 5px;
     width: 100%;
-    border-radius: 10px;
-    border: 2px dashed rgb(171, 202, 255);
-    color: #444;
+}
+
+.dropdown * {
+    box-sizing: border-box;
+}
+
+.select {
+    font-family: 'Satoshi', sans-serif;
+    background: var(--Color-cards);
+    color: var(--Color-texto-2);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid var(--bordes);
+    border-radius: 5px;
+    padding: 8px 15px;
     cursor: pointer;
-    transition: background .2s ease-in-out, border .2s ease-in-out;
+    transition: background 0.3s, border-color 0.3s;
 }
 
-.loadfile:hover {
-    background: rgba(0, 140, 255, 0.164);
-    border-color: rgba(17, 17, 17, 0.616);
-  }
-
-
-.botonload {
-    height: 30px;
-    background-color: transparent;
-    border: none;
-    margin: 0;
-    padding: 0;
+.select-clicked {
+    box-shadow: 0 0 0.8em var(--Color-boton);
 }
 
-.botonload i {
-    font-size: 24px; /* Ajusta el tamaño del icono */
-    color: var(--azul-boton);
-    margin: 0;
-    padding: 0;
+.select:hover {
+    background: var(--Color-hover-input);
+    color: var(--Color-cards);
 }
 
-input[type="file"] {
+.caret {
+    width: 0;
+    height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 6px solid var(--Color-textoNegro);
+    transition: 0.3s;
+}
+
+.caret-rotate {
+    transform: rotate(180deg);
+}
+
+.menu {
+    list-style: none;
+    padding: 0.2em 0.5em;
+    background: var(--color-fondoApp);
+    border: 1px solid var(--Color-BorderInput);
+    box-shadow: 0 0.5em 1em rgba(0, 0, 0, 0.2);
+    border-radius: 0.5em;
+    color: var(--Color-parrafo);
+    position: absolute;
+    top: 28px;
+    left: 50%;
+    width: 100%;
+    transform: translateX(-50%);
+    opacity: 0;
+    display: none;
+    transition: 0.2s;
+    z-index: 1;
+}
+
+.menu li {
+    font-size: 14px;
+    padding: 0.7em 0.5em;
+    margin: 0.3em 0;
+    border-radius: 0.5em;
+    cursor: pointer;
+    transition: background 0.3s, color 0.3s;
+}
+
+.menu li:hover {
+    background: var(--Color-hover-input);
+    color: var(--Color-cards);
+}
+
+.activa {
+    background: #dadada;
+    color: var(--Color-texto-2);
+}
+
+.menu-open {
+    display: block;
+    opacity: 1;
+}
+
+.selected{
+    font-size: 14px;
+}
+
+/* ----------------------------------------------------------------------------------------------------*/
+/* Parte de codigo que aplica estilos input que carga imagenes o kmz*/
+/* ----------------------------------------------------------------------------------------------------*/
+.contenedor-inputFile {
+    display: flex;
+    align-items: center; 
+    justify-content: space-between;
+    margin: 10px 0;
+    padding: 0px;
+    width: 100%;
+}
+
+.oculto {
     display: none;
 }
 
-.icono-verde {
-    color: rgb(93, 255, 93);
+.boton {
+    display: flex;
+    align-items: center; 
+    justify-content:center;
+    align-items: center;
+    background-color: #F5F7FD;
+    color: black;
+    padding: 10px 15px;
+    border-radius: 5px 0 0 5px;
+    border: 1px solid var(--bordes);
+    cursor: pointer;
+    transition: background 0.5s;
+    font-size: 14px;
+    height: 20px; 
+    width: 100%;
+    max-width: 100px; 
+    min-width: 100px; 
+
+}
+
+.boton:hover {
+    background-color: #e0e4f1;
+}
+
+.texto {
+    display: flex;
+    align-items: center; 
+    justify-content:start;
+    width: 100%;
+    font-size: 12px;
+    padding: 10px;
+    white-space: nowrap;
+    cursor: pointer;
+    overflow: hidden;
+    text-overflow: ellipsis;    
+    border-top: 1px solid var(--bordes);
+    border-bottom: 1px solid var(--bordes);
+    border-right: 1px solid var(--bordes);
+    border-radius: 0 5px 5px 0; 
+    height: 20px;
+}
+
+.add {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border: 1px solid var(--bordes);
+    background: transparent;
+    width: 100%;
+    margin-left: 10px;
+    width: 80px;
+    height: 40px;
+    border-radius: 5px;
+
+}
+
+.add i {
+    font-size: 20px;
+    color: var(--Color-boton);
+    transition: color 0.5s ease;  
+}
+
+.add:hover i {
+    color: white; /* Cambia el color del icono a blanco */
+    font-size: 23px;
+}
+
+.add:hover{
+    background-color:  var(--Color-boton);
+}
+
+/* ----------------------------------------------------------------------------------------------------*/
+/* Parte de codigo que aplica estilos a la tabla donde se cargan los archivos tipo imagen o kmz
+/* ----------------------------------------------------------------------------------------------------*/
+/* Contenedor de la tabla */
+.contenedor-load {
+    padding: 15px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Estilo para la tabla */
+.tabla-adjuntos {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+    font-family: 'Satoshi', sans-serif;
+}
+
+/* Estilo para las celdas de encabezado */
+.tabla-adjuntos th {
+    background-color: var(--azul);
+    color: white;
+    text-align: center;
+    padding: 12px 15px;
+    border-bottom: 2px solid #ddd;
+    font-weight: 500;
+    font-size: 12px;
+}
+
+/* Estilo para las celdas de la tabla */
+.tabla-adjuntos td {
+    padding: 12px 15px;
+    border-bottom: 1px solid #ddd;
+    text-align: left;
+    text-align: center;
+    vertical-align: middle;
+}
+
+/* Estilo para las filas de la tabla al pasar el mouse */
+.tabla-adjuntos tr:hover {
+    background-color: #f1f1f1;
+}
+
+/* Estilo para las celdas vacías en la última columna */
+.tabla-adjuntos td:last-child {
+    text-align: center;
+}
+
+/* Estilo para los botones de Ver y Eliminar */
+.tabla-adjuntos .btn {
+    padding: 6px 10px;
+    font-size: 14px;
+    cursor: pointer;
+    border-radius: 4px;
+    border: none;
+}
+
+
+
+
+/* Estilo específico para el botón "Ver" */
+.tabla-adjuntos .btn-ver {
+    color: white;
+}
+
+/* Estilo específico para el botón "Eliminar" */
+.tabla-adjuntos .btn-eliminar {
+    color: white;
+}
+
+/* Cambios al pasar el mouse sobre los botones */
+.tabla-adjuntos .btn:hover {
+    opacity: 0.8;
+}
+
+/* Estilo para las filas sin datos */
+.tabla-adjuntos td.empty {
+    text-align: center;
+    color: #ccc;
+}
+
+
+
+/* Estilo general para los botones */
+.icono-eliminar, .icono-ver {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+    padding: 0;
+    margin: 0;
+    transition: color 0.3s ease-in-out, transform 0.2s;
+}
+
+/* Botón "Eliminar" */
+.icono-eliminar i {
+    color: red;
+    font-size: 20px;
+    
+}
+.icono-eliminar:hover i {
+    color: darkred;
+    transform: scale(1.2);
+}
+
+/* Botón "Ver" */
+.icono-ver i {
+    color: blue;
+    font-size: 20px;
+
+}
+.icono-ver:hover i {
+    color: darkblue;
+    transform: scale(1.2);
 }

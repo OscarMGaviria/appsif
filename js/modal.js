@@ -130,13 +130,18 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 
-
-// Función para validar el tamaño del archivo
+//---------------------------------------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------------------------
+// Función para validar el tamaño del archivo que se esta subiendo al almacenamiento,
+// este no puede ser mayor a 1 MB
+//---------------------------------------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------------------------
 function validarArchivo(input, tipo) {
     const archivo = input.files[0];
 
     if (archivo) {
-        const tamañoMaximo = 5 * 1024 * 1024; // 5MB en bytes
+        const tamañoMaximo = 1 * 1024 * 1024; // MB en bytes
         if (archivo.size > tamañoMaximo) {
             alert(`El archivo seleccionado (${archivo.name}) supera los 5MB. Selecciona un archivo más pequeño.`);
             input.value = ""; // Reinicia el input
@@ -155,22 +160,43 @@ function validarArchivo(input, tipo) {
     }
 }
 
-// Evento para el div de imágenes
-document.getElementById('divLoadImg').addEventListener('click', function() {
-    document.getElementById('inputImg').click();
+
+
+//---------------------------------------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------------------------
+// Esta parte del codigo permite seleccionar los archivos tipo imgen o de localizacion con fileInput y fileName
+// teniendo en cuenta que solo son validos los archivos '.jpg', '.jpeg', '.png', '.kmz', '.kml'
+//---------------------------------------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------------------------
+
+
+// Seleccionamos el input file y el elemento donde se mostrará el nombre del archivo
+const fileInput = document.getElementById('fileInput');
+const fileNameLabel = document.getElementById('fileName');
+
+// Configuración de extensiones permitidas
+const allowedExtensions = ['.jpg', '.jpeg', '.png', '.kmz', '.kml'];
+
+// Evento para cuando se selecciona un archivo
+fileInput.addEventListener('change', function(event) {
+    const file = event.target.files[0];  // Obtenemos el primer archivo seleccionado
+    
+    if (file) {
+        const fileName = file.name;
+        const fileExtension = fileName.slice(fileName.lastIndexOf('.')).toLowerCase();  // Obtenemos la extensión del archivo
+        
+        // Verificamos si la extensión del archivo es válida
+        if (allowedExtensions.includes(fileExtension)) {
+            // Si el archivo es válido, mostramos el nombre en el label
+            fileNameLabel.textContent = fileName;
+        } else {
+            // Si no es válido, mostramos un mensaje de error
+            fileNameLabel.textContent = "Tipo de archivo no permitido";
+        }
+    } else {
+        // Si no hay archivo seleccionado, mostramos el mensaje predeterminado
+        fileNameLabel.textContent = "No se ha seleccionado ningún archivo";
+    }
 });
 
-// Evento para el div de KMZ
-document.getElementById('divLoadKmz').addEventListener('click', function() {
-    document.getElementById('inputKmz').click();
-});
-
-// Validar imágenes
-document.getElementById('inputImg').addEventListener('change', function() {
-    validarArchivo(this, "Imagen");
-});
-
-// Validar archivos KMZ
-document.getElementById('inputKmz').addEventListener('change', function() {
-    validarArchivo(this, "Archivo KMZ");
-});

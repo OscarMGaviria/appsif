@@ -29,9 +29,8 @@
     <!-- Agregar SheetJS CDN -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
 
-
-
 </head>
+
 <body>
     <section id="section-login" style="display: block;">
         <div class="login">
@@ -393,35 +392,61 @@
                                 <label for="observaciones" class="form-label">Observaciones</label>
                                 <textarea class="input-multitex" id="observaciones" rows="3"></textarea>
                             </div>
-                            <div class="input-doble">
-                                <div class="doble">
-                                    <label for="file_img" class="form-label">Imagenes cargadas</label>
-                                    <input type="number" class="input-text" id="file_img" disabled>
+                            <label for="dropdown" class="form-label">Subir archivos</label>
+                            <div class="contendedor-input">
+                                <div class="dropdown">
+                                    <div class="select">
+                                        <span class="selected">Imagen</span>
+                                        <div class="caret"></div>
+                                    </div>
+                                    <ul class="menu">
+                                        <li class="activa">Imagen</li>
+                                        <li>Localizacion</li>
+                                    </ul>
                                 </div>
-                                <div class="doble">
-                                    <label for="file_localizacion" class="form-label">Archivos de localización</label>
-                                    <input type="number" class="input-text" id="file_localizacion" disabled>
+                                <div class="dropdown">
+                                    <div class="select">
+                                        <span class="selected" id="etapa">Antes</span>
+                                        <div class="caret"></div>
+                                    </div>
+                                    <ul class="menu">
+                                        <li class="activa">Antes</li>
+                                        <li>En ejecución</li>
+                                        <li>Despues</li>
+                                        <li>Localizacion</li>
+                                    </ul>
                                 </div>
                             </div>
-                            <div class="contenedor-load">
-                                <!-- Div para cargar imagen -->
-                                <div class="loadfile" id="divLoadImg">
-                                    <label class="file-label" id="labelImg">Cargar imágenes</label>
-                                    <button class="botonload">
-                                        <i class="fa-solid fa-image"></i>
-                                    </button>
-                                    <input type="file" multiple id="inputImg" accept="image/*">
-                                </div>
+                            <div class="contenedor-inputFile"> 
+                                <label for="fileInput" class="boton">Elegir Archivo</label>
                         
-                                <!-- Div para cargar archivo KMZ -->
-                                <div class="loadfile" id="divLoadKmz">
-                                    <label class="file-label" id="labelKmz">Cargar localización</label>
-                                    
-                                    <button class="botonload">
-                                        <i class="fa-solid fa-map-location-dot"></i>
-                                    </button>
-                                    <input type="file" id="inputKmz" accept=".kmz">
-                                </div>
+                                <label for="fileInput" class="texto" id="fileName">
+                                    No se ha seleccionado ningún archivo
+                                </label>
+                            
+                                <!-- Input oculto -->
+                                <input type="file" id="fileInput" class="oculto" accept=".jpg, .jpeg, .png, .kmz, .kml">
+
+                            
+                                <label class="add" id="uploadButton">
+                                    <i class="fa-solid fa-plus-circle"></i>
+                                </label>
+                            </div>
+                            
+                            <div class="contenedor-load">
+                                <table class="tabla-adjuntos">
+                                    <thead>
+                                        <tr>
+                                            <th>Nombre</th>
+                                            <th>Estado</th>
+                                            <th>Ver</th>
+                                            <th>Eliminar</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tablaContenido">
+                                        <!-- Aquí se agregarán dinámicamente las filas -->
+                                    </tbody>
+                                </table>
                             </div>
                         
                         </div>
@@ -466,9 +491,10 @@
   <!--<script type="module" src="./js/auth.js"></script>  <script src="./js/app.js"></script>-->
   <script src="./js/modal.js"></script>
   <script src="./js/datos.js"></script>
-  <script type="module" src="./js/auth.js"></script>
-  
+  <script src="./js/firebase-config.js"></script>
 
+  <script type="module" src="./js/auth.js"></script>
+  <script type="module" src="./js/storage.js"></script>
 
 </body>
 </html>

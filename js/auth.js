@@ -664,7 +664,7 @@ export async function loadModal(id) {
     value_estadoContrato.setValue(datosContrato.estado_cto);
     // Objeto
     document.getElementById("Objeto").value = datosContrato.objeto;
-    
+    obtenerArchivos(datosContrato.contrato);
 
     // Municipio
     
@@ -732,7 +732,6 @@ export async function loadModal(id) {
     document.getElementById("supervisor").value = datosContrato.supervisor;
 
     document.getElementById("observaciones").value = datosContrato.observacion; 
-    document.getElementById("file_img").value = datosContrato.img || 0; 
 
 
     
@@ -745,7 +744,7 @@ export async function loadModal(id) {
     document.getElementById("imp-ambiental").value = datosContrato.imp_amb;
     document.getElementById("imp-social").value = datosContrato.imp_social;
     document.getElementById("imp-predial").value = datosContrato.imp_predial;
-    updateImageCount();
+   
 
 
     var boton = document.getElementById("guardar-btn");
@@ -811,7 +810,7 @@ export async function editar(id) {
     dependencia: document.getElementById("dependencia").value || '',
     supervisor: document.getElementById("supervisor").value || '',
     observacion: document.getElementById("observaciones").value || '',
-    img : document.getElementById("file_img").value || 0,
+    
 
     //------------------------------------------------------------------------------
     // Impactos
@@ -1003,200 +1002,3 @@ async function descargarContratosExcel() {
 window.descargarExcel = descargarContratosExcel;
 
 
-//-----------------------------------------------------------------------------------------------
-//-----------------------------------------------------------------------------------------------
-//-----------------------------------------------------------------------------------------------
-
-
-const storage = getStorage(app);
-
-// Elementos de la interfaz
-const uploadButton = document.getElementById("guardar-btn");
-const fileInput = document.getElementById("inputImg");
-
-uploadButton.addEventListener("click", async () => {
-    const files = Array.from(fileInput.files); // Convertir FileList a Array
-    const contractNumber = document.getElementById("Contrato").value.trim();
-
-    if (!contractNumber) {
-        alert("Por favor ingresa el número de contrato.");
-        return;
-    }
-
-    // Filtrar archivos que no sean imágenes
-    const imageFiles = files.filter(file => file.type.startsWith("image/"));
-
-    // Obtener los nombres de imágenes ya existentes en la carpeta
-    const contractFolderRef = ref(storage, `contratos/${contractNumber}`);
-    let existingFiles = [];
-    
-    try {
-        const listResult = await listAll(contractFolderRef);
-        existingFiles = listResult.items.map(item => item.name); // Obtener nombres de archivos existentes
-    } catch (error) {
-        //console.log("Error al listar archivos existentes:", error);
-    }
-
-    let index = existingFiles.length + 1; // Empezar con el siguiente número disponible
-
-    for (const file of imageFiles) {
-        const fileExtension = file.name.slice(file.name.lastIndexOf("."));
-        const uniqueFileName = `Imagen${index}${fileExtension}`;
-        index++; // Incrementar índice para la próxima imagen
-
-        const storageRef = ref(storage, `contratos/${contractNumber}/${uniqueFileName}`);
-        const uploadTask = uploadBytesResumable(storageRef, file);
-
-        uploadTask.on(
-            "state_changed",
-            (snapshot) => {
-                let progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                //console.log(`Subiendo ${file.name}... ${progress.toFixed(2)}%`);
-            },
-            (error) => {
-                //console.log(`Error al subir ${file.name}:`, error);
-            },
-            async () => {
-                try {
-                    const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
-                    console.log(`Subida de ${file.name} completada con éxito. URL: ${downloadURL}`);
-                    alert(file.name)
-                    // Actualizar la interfaz con la cantidad de imágenes cargadas
-                    updateImageCount();
-                } catch (error) {
-                    //console.log(`Error al obtener la URL de descarga de ${file.name}:`, error);
-                }
-            }
-        );
-    }
-});
-
-const filekmz = document.getElementById("inputKmz");
-
-uploadButton.addEventListener("click", async () => {
-    const files = Array.from(filekmz.files); // Convertir FileList a Array
-    const contractNumber = document.getElementById("Contrato").value.trim();
-
-    if (!contractNumber) {
-        alert("Por favor ingresa el número de contrato.");
-        return;
-    }
-
-    // Filtrar archivos que no sean KMZ
-    const kmzFiles = files.filter(file => file.type === "application/vnd.google-earth.kmz");
-
-    // Obtener los nombres de archivos ya existentes en la carpeta
-    const contractFolderRef = ref(storage, `contratos/${contractNumber}`);
-    let existingFiles = [];
-    
-    try {
-        const listResult = await listAll(contractFolderRef);
-        existingFiles = listResult.items.map(item => item.name); // Obtener nombres de archivos existentes
-    } catch (error) {
-        //console.log("Error al listar archivos existentes:", error);
-    }
-
-    let index = existingFiles.length + 1; // Empezar con el siguiente número disponible
-
-    for (const file of kmzFiles) {
-        const fileExtension = file.name.slice(file.name.lastIndexOf("."));
-        const uniqueFileName = `Localizacion${index}${fileExtension}`;
-        index++; // Incrementar índice para el próximo archivo
-
-        const storageRef = ref(storage, `contratos/${contractNumber}/${uniqueFileName}`);
-        const uploadTask = uploadBytesResumable(storageRef, file);
-
-        uploadTask.on(
-            "state_changed",
-            (snapshot) => {
-                let progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                //console.log(`Subiendo ${file.name}... ${progress.toFixed(2)}%`);
-            },
-            (error) => {
-                //console.log(`Error al subir ${file.name}:`, error);
-            },
-            async () => {
-                try {
-                    const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
-                    //console.log(`Subida de ${file.name} completada con éxito. URL: ${downloadURL}`);
-                    
-                    // Actualizar la interfaz con la cantidad de archivos cargados
-                    updateKmzCount();
-                } catch (error) {
-                    //console.log(`Error al obtener la URL de descarga de ${file.name}:`, error);
-                }
-            }
-        );
-    }
-});
-
-
-
-
-// Función para actualizar la cantidad de imágenes y archivos KMZ cargados
-async function updateImageCount() {
-  const contractNumber = document.getElementById("Contrato").value.trim();
-  const contractFolderRef = ref(storage, `contratos/${contractNumber}`);
-
-  try {
-      const listResult = await listAll(contractFolderRef);
-
-      // Filtrar solo los archivos de tipo imagen
-      const imageFiles = listResult.items.filter(item => {
-          return item.name.match(/\.(jpg|jpeg|png|gif|bmp|tiff)$/i); // Filtra las extensiones de imagen comunes
-      });
-
-      // Filtrar solo los archivos KMZ
-      const kmzFiles = listResult.items.filter(item => {
-          return item.name.endsWith(".kmz"); // Filtra los archivos KMZ
-      });
-
-      // Asignar el número de imágenes al input correspondiente
-      document.getElementById("file_img").value = imageFiles.length;
-
-      // Asignar el número de archivos KMZ al input correspondiente
-      document.getElementById("file_localizacion").value = kmzFiles.length;
-
-
-  } catch (error) {
-      console.log("Error al actualizar los contadores de archivos:", error);
-  }
-};
-
-document.getElementById("avance-meta").addEventListener("input", function(){
-  let val_meta = parseFloat(document.getElementById("meta").value) || 0;
-  let val_avmeta = parseFloat(document.getElementById("avance-meta").value) || 0;
-
-  if (val_meta > 0) {
-    let percen_avance = (100 * val_avmeta / val_meta).toFixed(2); // Redondear a 2 decimales
-    document.getElementById("avance_fisico").value = percen_avance; // Agregar símbolo %
-  } else {
-    document.getElementById("avance_fisico").value = 0;
-  }
-});
-
-
-document.getElementById("desembolsos").addEventListener("input", function(){
-
-  let valorInput = document.getElementById("Aporte_total").value;
-  let val_desembolso = parseFloat(document.getElementById("desembolsos").value) || 0;
-  console.log("total " + numero);
-  console.log("desm " + val_desembolso);
-  if (valor_total > 0) {
-    let percen_avfinan = (100 * val_desembolso / valor_total).toFixed(2); // Redondear a 2 decimales
-    document.getElementById("avance_financiero").value = percen_avfinan; // Agregar símbolo %
-  } else {
-    document.getElementById("avance_financiero").value = 0;
-  }
-});
-
-
-// Datos iniciales
-const data = {
-  labels: ['Aporte departamento', 'Aporte Municipio'],
-  datasets: [{
-      label: 'Valores',
-      data: [10, 20, 30, 40, 50], // Datos iniciales
-      backgroundColor: ['red', 'orange', 'yellow', 'green', 'blue']
-  }]
-};
