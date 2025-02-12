@@ -200,3 +200,199 @@ fileInput.addEventListener('change', function(event) {
     }
 });
 
+function sumarAportes() {
+    // Función para limpiar el formato de dinero (eliminando comas y el símbolo de moneda)
+    function limpiarValor(valor) {
+        // Primero quitar los puntos (separadores de miles)
+        valor = valor.replace(/\./g, '');
+    
+        // Luego quitar los símbolos de moneda
+        valor = valor.replace(/[^\d,.-]/g, '');
+    
+        // Reemplazar la coma por un punto decimal
+        valor = valor.replace(',', '.');
+    
+        // Convertir a float, si no puede convertirse, devuelve 0
+        return parseFloat(valor) || 0;
+    }
+
+    // Obtener los valores de los inputs y convertirlos a float
+    let aporteMpio = parseFloat(limpiarValor(document.getElementById('Aporte_mpio').value)); // Valor del aporte municipio
+    let aporteDto = parseFloat(limpiarValor(document.getElementById('Aporte_dto').value)); // Valor del aporte departamento
+
+    // Sumar los dos valores
+    let aporteTotal = aporteMpio + aporteDto;
+
+    // Si el total es cero, no se calculan los porcentajes
+    if (aporteTotal === 0) {
+        document.getElementById('Aporte_mpio_percent').value = 0;
+        document.getElementById('Aporte_dto_percent').value = 0;
+    } else {
+        // Calcular el porcentaje de cada uno respecto al total
+        let porcentajeMpio = (aporteMpio / aporteTotal) * 100;
+        let porcentajeDto = (aporteDto / aporteTotal) * 100;
+
+        // Colocar los porcentajes en los campos correspondientes
+        document.getElementById('Aporte_mpio_percent').value = porcentajeMpio.toFixed(2); // Porcentaje del municipio
+        document.getElementById('Aporte_dto_percent').value = porcentajeDto.toFixed(2); // Porcentaje del departamento
+    }
+
+    // Colocar el resultado total en el campo correspondiente
+    document.getElementById('Aporte_total').value = aporteTotal.toFixed(2); // Total con dos decimales
+}
+
+function limpiarValor(valor) {
+    // Primero quitar los puntos (separadores de miles)
+    valor = valor.replace(/\./g, '');
+
+    // Luego quitar los símbolos de moneda
+    valor = valor.replace(/[^\d,.-]/g, '');
+
+    // Reemplazar la coma por un punto decimal
+    valor = valor.replace(',', '.');
+
+    // Convertir a float, si no puede convertirse, devuelve 0
+    return parseFloat(valor) || 0;
+}
+
+
+function sumarAvances() { 
+    // Obtener los valores de los inputs
+    let valmeta = parseFloat(document.getElementById('meta').value) || 0;
+    let valAvmeta = parseFloat(document.getElementById('avance-meta').value) || 0; 
+    let aportotal = parseFloat(limpiarValor(document.getElementById('Aporte_total').value)) || 0; 
+    let desemb = parseFloat(limpiarValor(document.getElementById('desembolsos').value)) || 0; 
+
+    console.log(desemb, aportotal, valAvmeta, valmeta);
+
+    // Verificar si los desembolsos son mayores que el aporte total
+    if (desemb > aportotal) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'Los desembolsos no pueden ser mayores que el aporte total.',
+        });
+        // Si el avance es mayor que la meta, poner los valores a cero
+        document.getElementById('desembolsos').value = 0;
+        return;  // Salir de la función si hay un error
+    }
+
+    // Verificar si el avance meta es mayor que la meta
+    if (valAvmeta > valmeta) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'El avance no puede ser mayor que la meta. Los valores se reiniciarán.',
+        });
+
+        document.getElementById('avance-meta').value = 0;
+        return;  // Salir de la función para evitar seguir con el cálculo
+    }
+
+    // Calcular los porcentajes
+    let percAvanFisico = (valAvmeta / valmeta) * 100;
+    let percAvanFinan = aportotal !== 0 ? (desemb / aportotal) * 100 : 0;
+
+    // Colocar los porcentajes en los campos correspondientes
+    document.getElementById('avance_fisico').value = percAvanFisico.toFixed(2) || 0; // Porcentaje del municipio
+    document.getElementById('avance_financiero').value = percAvanFinan.toFixed(2) || 0; // Porcentaje del departamento
+    
+    // Obtener los valores de los inputs
+    const avanceFisico = parseFloat(document.getElementById('avance_fisico').value) || 0;
+    const avanceFinanciero = parseFloat(document.getElementById('avance_financiero').value) || 0;
+
+    // Crear las gráficas con los valores obtenidos
+    crearGraficaDoughnut('avanceFisico', avanceFisico);
+    crearGraficaDoughnut('avanceFinanciero', avanceFinanciero);
+}
+
+
+
+let chartFisico = null;  // Declaramos la variable fuera para poder hacer referencia a la gráfica
+let chartFinanciero = null;  // Declaramos la variable para la gráfica financiera
+
+function crearGraficaDoughnut() {
+    // Si ya existe una gráfica, la destruimos
+    if (chartFisico) {
+        chartFisico.destroy();
+    }
+
+    if (chartFinanciero) {
+        chartFinanciero.destroy();
+    }
+
+    // Obtener los valores de los avances
+    const avanceFisicoValue = parseFloat(document.getElementById('avance_fisico').value) || 0;
+    const avanceFinancieroValue = parseFloat(document.getElementById('avance_financiero').value) || 0;
+
+    // Crear las gráficas
+    chartFisico = new Chart(document.getElementById('avanceFisico'), {
+        type: 'doughnut',
+        data: {
+            labels: ['Avance Real', 'Restante'],
+            datasets: [{
+                label: 'Avance Físico (%)',
+                data: [avanceFisicoValue, 100 - avanceFisicoValue],
+                backgroundColor: ['#28a745', '#dcdcdc'],  // Verde para el avance, gris claro para el restante
+                hoverBackgroundColor: ['#218838', '#c6c6c6']  // Colores de hover más oscuros para un efecto interactivo
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'bottom',  // Mueve la leyenda a la parte inferior
+                    labels: {
+                        font: {
+                            size: 14,
+                            family: 'Arial, sans-serif',
+                            weight: 'bold'
+                        }
+                    }
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(tooltipItem) {
+                            return tooltipItem.raw + '%';  // Mostrar porcentaje en tooltip
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    chartFinanciero = new Chart(document.getElementById('avanceFinanciero'), {
+        type: 'doughnut',
+        data: {
+            labels: ['Avance Real', 'Restante'],
+            datasets: [{
+                label: 'Avance Financiero (%)',
+                data: [avanceFinancieroValue, 100 - avanceFinancieroValue],
+                backgroundColor: ['#28a745', '#dcdcdc'],  // Verde para el avance, gris claro para el restante
+                hoverBackgroundColor: ['#218838', '#c6c6c6']  // Colores de hover más oscuros
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'bottom',  // Mueve la leyenda a la parte inferior
+                    labels: {
+                        font: {
+                            size: 14,
+                            family: 'Arial, sans-serif',
+                            weight: 'bold'
+                        }
+                    }
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(tooltipItem) {
+                            return tooltipItem.raw + '%';  // Mostrar porcentaje en tooltip
+                        }
+                    }
+                }
+            }
+        }
+    });
+}

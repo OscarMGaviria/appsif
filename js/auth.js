@@ -366,7 +366,7 @@ async function guardarDatos() {
     var dependencia = document.getElementById("dependencia").value || '';
     var supervisor = document.getElementById("supervisor").value || '';
     var observacion = document.getElementById("observaciones").value;
-    var img = document.getElementById("file_img").value || 0; 
+
 
    
     //------------------------------------------------------------------------------
@@ -412,7 +412,6 @@ async function guardarDatos() {
       dependencia: dependencia,
       supervisor: supervisor,
       observacion: observacion,
-      img:img,
 
 
       impacto: impacto,
@@ -703,7 +702,8 @@ export async function loadModal(id) {
     //Tipo proyecto
     value_tipoProy.setValue(datosContrato.tipo_proyecto);
     //Fuente de financiacion
-    value_fuenteFinanciacion.setValue(datosContrato.financiacion.split(", "));
+    value_fuenteFinanciacion.setValue((datosContrato.financiacion && datosContrato.financiacion.split(", ")) || "");
+
     
 
     // Información financiera
@@ -722,6 +722,9 @@ export async function loadModal(id) {
 
     document.getElementById("avance_fisico").value = datosContrato.avance_fisico;
     document.getElementById("avance_financiero").value = datosContrato.avance_financiero;
+
+    crearGraficaDoughnut('avanceFisico', datosContrato.avance_fisico || 0);
+    crearGraficaDoughnut('avanceFinanciero', datosContrato.avance_financiero || 0);
     
     // Dependencia
     if (value_dependencia) {
@@ -761,6 +764,19 @@ export async function loadModal(id) {
 //-----------------------------------------------------------------------------------------------
 //-----------------------------------------------------------------------------------------------
 //-----------------------------------------------------------------------------------------------
+function limpiarValor(valor) {
+  // Primero quitar los puntos (separadores de miles)
+  valor = valor.replace(/\./g, '');
+
+  // Luego quitar los símbolos de moneda
+  valor = valor.replace(/[^\d,.-]/g, '');
+
+  // Reemplazar la coma por un punto decimal
+  valor = valor.replace(',', '.');
+
+  // Convertir a float, si no puede convertirse, devuelve 0
+  return parseFloat(valor) || 0;
+}
 
 export async function editar(id) {
   var valores = value_mupio.getValue();
@@ -769,6 +785,8 @@ export async function editar(id) {
   var imp = value_impactos.getValue();
   
   const contrato_id = doc(db, "contratos", id);
+
+
 
   // Crear un objeto con los datos a actualizar
   const contratoData = {
@@ -791,9 +809,11 @@ export async function editar(id) {
     // Fuente de Financiación
     tipo_proyecto:document.getElementById("tipo-proy").value || '', 
     financiacion:fnaciacion.length > 0 ? fnaciacion.join(', ') : '',
-    aporte_dto: document.getElementById("Aporte_dto").value || 0,
-    aporte_mpio: document.getElementById("Aporte_mpio").value || 0,
-    aporte_total: document.getElementById("Aporte_total").value || 0,
+
+    aporte_dto: limpiarValor(document.getElementById("Aporte_dto").value || 0),
+    aporte_mpio: limpiarValor(document.getElementById("Aporte_mpio").value || 0),
+    aporte_total: limpiarValor(document.getElementById("Aporte_total").value || 0),
+
     percen_dtop: document.getElementById("Aporte_dto_percent").value || 0,
     percen_mpio: document.getElementById("Aporte_mpio_percent").value || 0,
     
@@ -801,7 +821,10 @@ export async function editar(id) {
     // avances
     meta: document.getElementById("meta").value || '',
     avance_meta: document.getElementById("avance-meta").value || '',
-    desembolso:document.getElementById("desembolsos").value || 0, 
+
+
+    desembolso: limpiarValor(document.getElementById("desembolsos").value || 0),
+
     avance_fisico: document.getElementById("avance_fisico").value || 0,
     avance_financiero: document.getElementById("avance_financiero").value || 0,
 

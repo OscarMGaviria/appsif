@@ -29,6 +29,11 @@
     <!-- Agregar SheetJS CDN -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
 
+    <!-- Graficas -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
+
 </head>
 
 <body>
@@ -317,17 +322,23 @@
                             <div class="input-doble">
                                 <div class="doble">
                                     <label for="Aporte_dto" class="form-label">Aporte Departamento</label>
-                                    <input type="text" class="input-text" placeholder="Ingrese la interventoría" autocomplete="off" id="Aporte_dto" required>
+                                    <input type="text" class="input-text" placeholder="Ingrese aportes departamento" autocomplete="off" id="Aporte_dto" required>
                                 </div>
                                 <div class="doble">
                                     <label for="Aporte_mpio" class="form-label">Aporte Municipio</label>
-                                    <input type="text" class="input-text" placeholder="Ingrese la interventoría" autocomplete="off" id="Aporte_mpio" required>
+                                    <input type="text" class="input-text" placeholder="Ingrese aportes municipio" autocomplete="off" id="Aporte_mpio" required>
                                 </div>
                             </div>
-
-                            <div class="doble">
-                                <label for="Aporte_total" class="form-label">Aporte total</label>
-                                <input type="text" class="input-text" placeholder="Ingrese la interventoría" autocomplete="off" id="Aporte_total" required>
+                            <div class="input-doble">
+                                <div class="doble">
+                                    <label for="Aporte_total" class="form-label">Aporte total</label>
+                                    <input type="text" class="input-text" placeholder="Ingrese aportes totales" autocomplete="off" id="Aporte_total" required>
+                                </div>
+                                <div class="doble2">
+                                    <button class="calculadora" title="Suma los aportes" onclick="sumarAportes()">
+                                        <i class="fas fa-plus-square"></i>
+                                    </button>
+                                </div>
                             </div>
 
                             <div class="input-doble">
@@ -355,10 +366,18 @@
                                     <input type="text" class="input-text" id="avance-meta" autocomplete="off" placeholder="Cantidad ejecutada a la fecha"> 
                                 </div>
                             </div>
-                            <div class="doble">
-                                <label for="desembolsos" class="form-label">desembolsos</label>
-                                <input type="text" class="input-text" placeholder="Ingrese la interventoría" autocomplete="off" id="desembolsos" required>
+                            <div class="input-doble">
+                                <div class="doble">
+                                    <label for="desembolsos" class="form-label">desembolsos</label>
+                                    <input type="text" class="input-text" placeholder="Ingrese los desembolsos" autocomplete="off" id="desembolsos" required>
+                                </div>
+                                <div class="doble2">
+                                    <button class="calculadora" title="Suma los aportes" onclick="sumarAvances()">
+                                        <i class="fas fa-plus-square"></i>
+                                    </button>
+                                </div>
                             </div>
+
                             <div class="input-doble">
                                 <div class="doble">
                                     <label for="avance_fisico" class="form-label">Avance fisico (%)</label>
@@ -370,8 +389,12 @@
                                 </div>
                             </div>
                             <div class="container">
-                                <canvas id="avanceFisico"></canvas>
-                                <canvas id="avanceFinanciero"></canvas>
+                                <div class="canvagrafica">
+                                    <canvas id="avanceFisico"></canvas>
+                                </div>
+                                <div class="canvagrafica">
+                                    <canvas id="avanceFinanciero"></canvas>
+                                </div>
                             </div>
                         </div>
                         <div class="tab-panel" id="content-4">
@@ -425,7 +448,7 @@
                                 </label>
                             
                                 <!-- Input oculto -->
-                                <input type="file" id="fileInput" class="oculto" accept=".jpg, .jpeg, .png, .kmz, .kml">
+                                <input type="file" id="fileInput" multiple class="oculto" accept=".jpg, .jpeg, .png, .kmz, .kml">
 
                             
                                 <label class="add" id="uploadButton">

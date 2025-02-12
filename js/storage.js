@@ -177,13 +177,15 @@ const resetearInputFile = () => {
 const uploadButton = document.getElementById('uploadButton');
 const fileInput = document.getElementById('fileInput');
 const NContrato = document.getElementById('Contrato');
+const fileNameLabel = document.getElementById("fileName");
+
 
 let valSelect; // Declaramos la variable
 
 uploadButton.addEventListener('click', () => {
-    
-    
     const contrato = NContrato.value;
+    
+    // Determinar el valor de 'valSelect'
     if (dropuno === "Localización" || sel === "Localización") {
         valSelect = "Localización";  
     } else {
@@ -193,23 +195,42 @@ uploadButton.addEventListener('click', () => {
             valSelect = sel; 
         }  
     }
-    const file = fileInput.files[0]; 
-    if (file) {
-    // Crear una referencia al archivo en Firebase Storage
-    const fileRef = ref(storage, `contratos/${contrato}/${valSelect}/${file.name}`);
 
-    // Subir el archivo a Firebase Storage
-    uploadBytes(fileRef, file).then((snapshot) => {
-        console.log('¡Archivo subido con éxito!', snapshot);
-    }).catch((error) => {
-        console.error('Error al subir el archivo:', error);
-    });
-    obtenerArchivos(contrato);
-} else {
-    console.log('No se ha seleccionado ningún archivo');
-}
+    const files = fileInput.files; // Obtener todos los archivos seleccionados
+
+    if (files.length > 0) {
+        // Iterar sobre los archivos seleccionados
+        Array.from(files).forEach((file) => {
+            // Crear una referencia al archivo en Firebase Storage
+            const fileRef = ref(storage, `contratos/${contrato}/${valSelect}/${file.name}`);
+
+            // Subir el archivo a Firebase Storage
+            uploadBytes(fileRef, file).then((snapshot) => {
+                
+            }).catch((error) => {
+                console.error('Error al subir el archivo:', error);
+            });
+        });
+
+        Swal.fire({
+            position: "top-end",
+            icon: "success",
+            title: "Archivos cargados con éxito",
+            showConfirmButton: false,
+            timer: 1500
+          });
+
+        setTimeout(() => {
+            obtenerArchivos(contrato); // Llamar a la función después de 3 segundos
+        }, 3000);
+
+    } else {
+        Swal.fire("No has seleccionado ningun archivo.");
+    }
+
     resetearInputFile();
 });
+
 
 //---------------------------------------------------------------------------------------------------------------------
 //---------------------------------------------------------------------------------------------------------------------
@@ -221,6 +242,7 @@ uploadButton.addEventListener('click', () => {
 // Importar funciones necesarias desde Firebase SDK
 // Función para obtener archivos dentro de un contrato y sus subcarpetas
 window.obtenerArchivos = function (contractNumber) {
+    
     const folderRef = ref(storage, `contratos/${contractNumber}`);
     listAll(folderRef).then(async (res) => {
         const tablaContenido = document.getElementById('tablaContenido');

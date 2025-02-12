@@ -789,3 +789,67 @@ input[type="number"]::-webkit-inner-spin-button {
     color: darkblue;
     transform: scale(1.2);
 }
+
+/* Estilo general del botón */
+.calculadora {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    cursor: pointer;
+    width: 40px; /* Ajusta el tamaño para hacerlo más accesible */
+    height: 40px;
+    border-radius: 50%; /* Hacerlo circular */
+    border: none;
+    background: #28a745; /* Verde brillante */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra suave para darle profundidad */
+    transition: all 0.3s ease; /* Transición suave */
+}
+
+/* Efectos cuando el botón es presionado o al pasar el mouse */
+.calculadora:hover {
+    background: #218838; /* Color más oscuro al pasar el mouse */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); /* Sombra más profunda al pasar el mouse */
+}
+
+/* Estilo del ícono dentro del botón */
+.calculadora i {
+    font-size: 15px;
+    color: white; /* Color blanco para el ícono */
+    transition: color 0.3s ease;
+}
+
+/* Efecto en el ícono cuando se pasa el mouse */
+.calculadora:hover i {
+    color: #fff; /* Se mantiene blanco en el hover */
+}
+
+/* Contenedor del botón, centrado */
+.doble2 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 70px; /* Ajusta el tamaño del contenedor */
+    margin: 0;
+    padding: 0;
+}
+
+
+
+.container {
+    display: flex;                /* Usa flexbox para alinear los elementos en línea */
+    justify-content: space-between; /* Espacio entre las gráficas */
+    align-items: center;           /* Alinea las gráficas al centro verticalmente */
+    gap: 20px;                     /* Espacio entre las gráficas */
+    padding: 0;
+}
+
+.canvagrafica {
+    width: 100%;                   /* Ajusta el ancho de cada gráfica a 48% del contenedor */
+    height: 300px;                /* Ajusta la altura de las gráficas */
+    max-width: 280px;             /* Establece un ancho máximo para las gráficas */
+    flex: 1;                       /* Deja que las gráficas se expandan para llenar el espacio disponible */
+    box-sizing: border-box;       /* Asegura que el padding y el borde no afecten el tamaño total del elemento */
+}
+
